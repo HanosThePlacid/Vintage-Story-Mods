@@ -1,9 +1,10 @@
 {
   "type": "code",
-  "modid": "egocaribautomapmarkers",
-  "name": "Auto Map Markers",
+  "modid": "automapmarkersclientside",
+  "name": "Auto Map Markers (Client-Side Only)",
   "authors": [ "egocarib" ],
-  "description": "Adds map markers to your map when you interact with certain objects. Fully configurable.",
+  "contributors": [ "HanosThePlacid" ],
+  "description": "Adds map markers to your map when you interact with certain objects. Fully configurable. Fork of egocarib's Auto Map Markers, reworked to work with a client-side-only install.",
   "version": "5.1.0",
   "requiredOnServer": false,
   "requiredOnClient":  true,
