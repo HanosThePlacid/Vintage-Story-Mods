@@ -1,4 +1,6 @@
-﻿# Auto Map Markers
+﻿# Auto Map Markers (client-side-only fork)
+
+A fork of egocarib's great [Auto Map Markers](https://github.com/egocarib/Vintage-Story-Mods) mod, reworked to run client-side only — no server-side install needed.
 
 Automatically adds map markers to your map when you harvest certain objects or find loose ore. Fully configurable.
 
