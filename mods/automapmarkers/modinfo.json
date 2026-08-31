@@ -5,7 +5,7 @@
   "authors": [ "egocarib" ],
   "contributors": [ "HanosThePlacid" ],
   "description": "Adds map markers to your map when you interact with certain objects. Fully configurable. Fork of egocarib's Auto Map Markers, reworked to work with a client-side-only install.",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "requiredOnServer": false,
   "requiredOnClient":  true,
   "dependencies": {
