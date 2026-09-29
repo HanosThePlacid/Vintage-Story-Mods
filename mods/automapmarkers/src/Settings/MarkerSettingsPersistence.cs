@@ -228,8 +228,50 @@ namespace Egocarib.AutoMapMarkers.Settings
                 Directory.CreateDirectory(settingsDir);
 
             string settingsPath = Path.Combine(settingsDir, SettingsFileName);
+            PreserveOverridesForAbsentEntries(settingsPath, settingsFile, definitions);
             string json = JsonConvert.SerializeObject(settingsFile, Formatting.Indented);
             File.WriteAllText(settingsPath, json);
+        }
+
+        /// <summary>
+        /// Carries over saved overrides for markers that aren't defined right now - typically compat
+        /// entries whose mod isn't loaded in this world. Without this, joining one server without
+        /// that mod and saving settings would wipe the player's customizations for it.
+        /// </summary>
+        private static void PreserveOverridesForAbsentEntries(string settingsPath, SettingsFile settingsFile, List<MarkerCategoryDef> definitions)
+        {
+            if (!File.Exists(settingsPath))
+                return;
+
+            Dictionary<string, MarkerOverride> previous;
+            try
+            {
+                previous = JsonConvert.DeserializeObject<SettingsFile>(File.ReadAllText(settingsPath))?.MarkerOverrides;
+            }
+            catch (Exception)
+            {
+                return;  // Unreadable file - LoadSettings already reported it
+            }
+            if (previous == null)
+                return;
+
+            var definedLabels = new HashSet<string>(CustomMarkerEntries.Select(c => c.Label));
+            foreach (var category in definitions)
+            {
+                foreach (var entry in category.Entries)
+                {
+                    definedLabels.Add(entry.Label);
+                    if (entry.ExpandableEntries != null)
+                        foreach (var sub in entry.ExpandableEntries)
+                            definedLabels.Add(sub.Label);
+                }
+            }
+
+            foreach (var (label, over) in previous)
+            {
+                if (!definedLabels.Contains(label) && !settingsFile.MarkerOverrides.ContainsKey(label))
+                    settingsFile.MarkerOverrides[label] = over;
+            }
         }
 
         /// <summary>
@@ -411,7 +453,10 @@ namespace Egocarib.AutoMapMarkers.Settings
                 markerColor: over?.Color ?? defaults.Color,
                 markerIcon: over?.Icon ?? defaults.Icon,
                 markerCoverageRadius: over?.CoverageRadius ?? defaults.CoverageRadius
-            );
+            )
+            {
+                MaxCoverageRadius = Math.Max(defaults.MaxCoverageRadius, defaults.CoverageRadius)
+            };
         }
 
         /// <summary>

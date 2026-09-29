@@ -80,7 +80,10 @@ namespace Egocarib.AutoMapMarkers.GUI
             SingleComposer.IconListPickerSetValue($"{GuiPrefix}-iconPicker", selectedIconIndex);
             SingleComposer.GetTextInput($"{GuiPrefix}-nameInput").SetValue(settings.MarkerTitle);
             SingleComposer.GetSwitch($"{GuiPrefix}-pinnedSwitch").SetValue(settings.MarkerPinned);
-            SingleComposer.GetSlider($"{GuiPrefix}-radiusSlider").SetValues(settings.MarkerCoverageRadius, 1, 64, 1, " blocks");
+            // Never cap below the current value, so a radius saved by a hand-edited settings file
+            // (or an older definition) isn't silently clamped when the dialog opens.
+            int maxRadius = System.Math.Max(settings.MaxCoverageRadius, settings.MarkerCoverageRadius);
+            SingleComposer.GetSlider($"{GuiPrefix}-radiusSlider").SetValues(settings.MarkerCoverageRadius, 1, maxRadius, 1, " blocks");
         }
 
         private void OnIconSelected(int index)

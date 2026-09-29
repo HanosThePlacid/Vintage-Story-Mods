@@ -1,0 +1,28 @@
+// Tree hollows from NDL TreeHollows (standardhollowchest / standardhollowchestfilled) and
+// Primitive Survival (treehollowgrown). Shown when either mod is loaded.
+[
+  {
+    "Category": "Other",
+    "Entries": [
+      {
+        "Label": "egocarib-mapmarkers:tree-hollows",
+        "AssetPaths": [
+          "standardhollowchest*",
+          "treehollowgrown-*"
+        ],
+        "RequiredMods": [
+          "ndltreehollows",
+          "primitivesurvival"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "egocarib-mapmarkers:tree-hollows",
+          "Icon": "tree2",
+          "Color": "saddlebrown",
+          "Pinned": false,
+          "CoverageRadius": 4
+        }
+      }
+    ]
+  }
+]

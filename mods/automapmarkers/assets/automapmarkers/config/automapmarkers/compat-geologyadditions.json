@@ -1,0 +1,524 @@
+// Markers for ores added by Geology Additions (https://mods.vintagestory.at/geoaddons).
+// Only shown when that mod is loaded. Titles use Geology Additions' own lang entries.
+[
+  {
+    "Category": "Surface Ore",
+    "Entries": [
+      {
+        "Label": "game:block-looseores-azurite-*",
+        "AssetPaths": [
+          "looseores-azurite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-azurite-*",
+          "Icon": "pick",
+          "Color": "deepskyblue",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-cerussite-*",
+        "AssetPaths": [
+          "looseores-cerussite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-cerussite-*",
+          "Icon": "pick",
+          "Color": "lightgray",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-chalcocite-*",
+        "AssetPaths": [
+          "looseores-chalcocite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-chalcocite-*",
+          "Icon": "pick",
+          "Color": "darkslategray",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-chalcopyrite-*",
+        "AssetPaths": [
+          "looseores-chalcopyrite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-chalcopyrite-*",
+          "Icon": "pick",
+          "Color": "gold",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-franckeite-*",
+        "AssetPaths": [
+          "looseores-franckeite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-franckeite-*",
+          "Icon": "pick",
+          "Color": "slategray",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-freibergite-*",
+        "AssetPaths": [
+          "looseores-freibergite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-freibergite-*",
+          "Icon": "pick",
+          "Color": "silver",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-hemimorphite-*",
+        "AssetPaths": [
+          "looseores-hemimorphite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-hemimorphite-*",
+          "Icon": "pick",
+          "Color": "powderblue",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-nativeplatinum-*",
+        "AssetPaths": [
+          "looseores-nativeplatinum-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-nativeplatinum-*",
+          "Icon": "pick",
+          "Color": "gainsboro",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-pyrite-*",
+        "AssetPaths": [
+          "looseores-pyrite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-pyrite-*",
+          "Icon": "pick",
+          "Color": "goldenrod",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-smithsonite-*",
+        "AssetPaths": [
+          "looseores-smithsonite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-smithsonite-*",
+          "Icon": "pick",
+          "Color": "aquamarine",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-sperrylite-*",
+        "AssetPaths": [
+          "looseores-sperrylite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-sperrylite-*",
+          "Icon": "pick",
+          "Color": "lightsteelblue",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-teallite-*",
+        "AssetPaths": [
+          "looseores-teallite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-teallite-*",
+          "Icon": "pick",
+          "Color": "darkgray",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-tetrahedrite-*",
+        "AssetPaths": [
+          "looseores-tetrahedrite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-tetrahedrite-*",
+          "Icon": "pick",
+          "Color": "dimgray",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-vanadinite-*",
+        "AssetPaths": [
+          "looseores-vanadinite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-vanadinite-*",
+          "Icon": "pick",
+          "Color": "orangered",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "game:block-looseores-wulfenite-*",
+        "AssetPaths": [
+          "looseores-wulfenite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-wulfenite-*",
+          "Icon": "pick",
+          "Color": "orange",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      }
+    ]
+  },
+  {
+    "Category": "Deep Ore",
+    "Entries": [
+      {
+        "Label": "game:block-ore-*-azurite-*",
+        "AssetPaths": [
+          "ore-*-azurite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-azurite-*",
+          "Icon": "ladder",
+          "Color": "deepskyblue",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-cerussite-*",
+        "AssetPaths": [
+          "ore-*-cerussite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-cerussite-*",
+          "Icon": "ladder",
+          "Color": "lightgray",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-chalcocite-*",
+        "AssetPaths": [
+          "ore-*-chalcocite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-chalcocite-*",
+          "Icon": "ladder",
+          "Color": "darkslategray",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-chalcopyrite-*",
+        "AssetPaths": [
+          "ore-*-chalcopyrite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-chalcopyrite-*",
+          "Icon": "ladder",
+          "Color": "gold",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-franckeite-*",
+        "AssetPaths": [
+          "ore-*-franckeite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-franckeite-*",
+          "Icon": "ladder",
+          "Color": "slategray",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-freibergite-*",
+        "AssetPaths": [
+          "ore-*-freibergite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-freibergite-*",
+          "Icon": "ladder",
+          "Color": "silver",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-hemimorphite-*",
+        "AssetPaths": [
+          "ore-*-hemimorphite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-hemimorphite-*",
+          "Icon": "ladder",
+          "Color": "powderblue",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-nativeplatinum-*",
+        "AssetPaths": [
+          "ore-*-nativeplatinum-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-nativeplatinum-*",
+          "Icon": "ladder",
+          "Color": "gainsboro",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-pyrite-*",
+        "AssetPaths": [
+          "ore-*-pyrite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-pyrite-*",
+          "Icon": "ladder",
+          "Color": "goldenrod",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-smithsonite-*",
+        "AssetPaths": [
+          "ore-*-smithsonite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-smithsonite-*",
+          "Icon": "ladder",
+          "Color": "aquamarine",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-sperrylite-*",
+        "AssetPaths": [
+          "ore-*-sperrylite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-sperrylite-*",
+          "Icon": "ladder",
+          "Color": "lightsteelblue",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-teallite-*",
+        "AssetPaths": [
+          "ore-*-teallite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-teallite-*",
+          "Icon": "ladder",
+          "Color": "darkgray",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-tetrahedrite-*",
+        "AssetPaths": [
+          "ore-*-tetrahedrite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-tetrahedrite-*",
+          "Icon": "ladder",
+          "Color": "dimgray",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-vanadinite-*",
+        "AssetPaths": [
+          "ore-*-vanadinite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-vanadinite-*",
+          "Icon": "ladder",
+          "Color": "orangered",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "game:block-ore-*-wulfenite-*",
+        "AssetPaths": [
+          "ore-*-wulfenite-*"
+        ],
+        "RequiredMods": [
+          "geoaddons"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-wulfenite-*",
+          "Icon": "ladder",
+          "Color": "orange",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      }
+    ]
+  }
+]

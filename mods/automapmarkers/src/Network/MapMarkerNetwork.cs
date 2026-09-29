@@ -266,6 +266,10 @@ namespace Egocarib.AutoMapMarkers.Network
             var modSettings = ValidateClientRequest("map marker creation");
             if (modSettings == null) return;
 
+            // Both handlers ignore disabled markers anyway; dropping them here avoids a packet per
+            // block while mining through a rock type whose marker is switched off.
+            if (settings == null || !settings.Enabled) return;
+
             if (!UseServerChannel)
             {
                 ClientWaypointCommands.AddWaypoint(position, settings, sendChatMessage,

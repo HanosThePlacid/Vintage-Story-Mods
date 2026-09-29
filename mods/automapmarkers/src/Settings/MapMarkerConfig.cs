@@ -857,6 +857,13 @@ namespace Egocarib.AutoMapMarkers.Settings
                 [ProtoMember(5, IsRequired = true)]
                 public int MarkerCoverageRadius;
 
+                /// <summary>
+                /// Slider cap for MarkerCoverageRadius, taken from the marker definition. Client-side
+                /// GUI hint only - not sent over the network or saved.
+                /// </summary>
+                [JsonIgnore]
+                public int MaxCoverageRadius = MarkerDefaultsDef.DefaultMaxCoverageRadius;
+
                 public AutoMapMarkerSetting() { /* paramaterless constructor required by proto-buf */ }
 
                 [JsonConstructor]

@@ -205,6 +205,36 @@
           "Pinned": false,
           "CoverageRadius": 20
         }
+      },
+      {
+        // Trees (expandable, one sub-entry per wood type). Only grown logs match, so player-placed
+        // logs never create markers. Large radius so one marker covers a stand of trees.
+        "Label": "egocarib-mapmarkers:trees",
+        "AssetPaths": ["log-grown-*"],
+        "DefaultExpanded": true,
+        "Defaults": {
+          "Enabled": false,
+          "Title": "egocarib-mapmarkers:trees",
+          "Icon": "tree",
+          "Color": "forestgreen",
+          "Pinned": false,
+          "CoverageRadius": 64,
+          "MaxCoverageRadius": 256
+        },
+        "ExpandableEntries": [
+          { "Label": "game:material-acacia", "AssetPaths": ["log-grown-acacia-*"], "Defaults": { "Enabled": false, "Title": "game:material-acacia", "Icon": "tree", "Color": "goldenrod", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-baldcypress", "AssetPaths": ["log-grown-baldcypress-*"], "Defaults": { "Enabled": false, "Title": "game:material-baldcypress", "Icon": "tree", "Color": "darkolivegreen", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-birch", "AssetPaths": ["log-grown-birch-*"], "Defaults": { "Enabled": false, "Title": "game:material-birch", "Icon": "tree", "Color": "khaki", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-ebony", "AssetPaths": ["log-grown-ebony-*"], "Defaults": { "Enabled": false, "Title": "game:material-ebony", "Icon": "tree", "Color": "black", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-kapok", "AssetPaths": ["log-grown-kapok-*"], "Defaults": { "Enabled": false, "Title": "game:material-kapok", "Icon": "tree", "Color": "olivedrab", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-larch", "AssetPaths": ["log-grown-larch-*"], "Defaults": { "Enabled": false, "Title": "game:material-larch", "Icon": "tree", "Color": "yellowgreen", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-maple", "AssetPaths": ["log-grown-maple-*"], "Defaults": { "Enabled": false, "Title": "game:material-maple", "Icon": "tree", "Color": "orangered", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-oak", "AssetPaths": ["log-grown-oak-*"], "Defaults": { "Enabled": false, "Title": "game:material-oak", "Icon": "tree", "Color": "saddlebrown", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-pine", "AssetPaths": ["log-grown-pine-*"], "Defaults": { "Enabled": false, "Title": "game:material-pine", "Icon": "tree", "Color": "darkgreen", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-purpleheart", "AssetPaths": ["log-grown-purpleheart-*"], "Defaults": { "Enabled": false, "Title": "game:material-purpleheart", "Icon": "tree", "Color": "purple", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-redwood", "AssetPaths": ["log-grown-redwood-*"], "Defaults": { "Enabled": false, "Title": "game:material-redwood", "Icon": "tree", "Color": "firebrick", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } },
+          { "Label": "game:material-walnut", "AssetPaths": ["log-grown-walnut-*"], "Defaults": { "Enabled": false, "Title": "game:material-walnut", "Icon": "tree", "Color": "sienna", "Pinned": false, "CoverageRadius": 64, "MaxCoverageRadius": 256 } }
+        ]
       }
     ]
   },
@@ -212,6 +242,19 @@
     // Surface Ore
     "Category": "Surface Ore",
     "Entries": [
+      {
+        // Alum (surface)
+        "Label": "game:block-looseores-alum-*",
+        "AssetPaths": ["looseores-alum-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-alum-*",
+          "Icon": "pick",
+          "Color": "lavender",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
       {
         // Anthracite (surface)
         "Label": "game:block-looseores-anthracite-*",
@@ -291,6 +334,19 @@
         }
       },
       {
+        // Fluorite (surface)
+        "Label": "game:block-looseores-fluorite-*",
+        "AssetPaths": ["looseores-fluorite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-fluorite-*",
+          "Icon": "pick",
+          "Color": "mediumorchid",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
         // Gold Ore Bits (surface)
         "Label": "egocarib-mapmarkers:gold-ore-bits",
         "AssetPaths": ["looseores-quartz_nativegold-*"],
@@ -299,6 +355,32 @@
           "Title": "game:block-looseores-quartz_nativegold-*",
           "Icon": "pick",
           "Color": "gold",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        // Graphite (surface)
+        "Label": "game:block-looseores-graphite-*",
+        "AssetPaths": ["looseores-graphite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-graphite-*",
+          "Icon": "pick",
+          "Color": "dimgray",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        // Kernite (surface)
+        "Label": "game:block-looseores-kernite-*",
+        "AssetPaths": ["looseores-kernite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-kernite-*",
+          "Icon": "pick",
+          "Color": "lightsteelblue",
           "Pinned": false,
           "CoverageRadius": 9
         }
@@ -343,6 +425,19 @@
         }
       },
       {
+        // Phosphorite (surface)
+        "Label": "game:block-looseores-phosphorite-*",
+        "AssetPaths": ["looseores-phosphorite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-phosphorite-*",
+          "Icon": "pick",
+          "Color": "sandybrown",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
         // Quartz (surface)
         "Label": "game:block-looseores-quartz-*",
         "AssetPaths": ["looseores-quartz-*"],
@@ -382,6 +477,19 @@
         }
       },
       {
+        // Sylvite (surface)
+        "Label": "game:block-looseores-sylvite-halite-*",
+        "AssetPaths": ["looseores-sylvite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-looseores-sylvite-halite-*",
+          "Icon": "pick",
+          "Color": "lightpink",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
         // Tin / Cassiterite (surface)
         "Label": "game:block-looseores-cassiterite-*",
         "AssetPaths": ["looseores-cassiterite-*"],
@@ -400,6 +508,19 @@
     // Deep Ore
     "Category": "Deep Ore",
     "Entries": [
+      {
+        // Alum (deep)
+        "Label": "game:block-ore-alum-*",
+        "AssetPaths": ["ore-alum-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-alum-*",
+          "Icon": "ladder",
+          "Color": "lavender",
+          "Pinned": false,
+          "CoverageRadius": 16
+        }
+      },
       {
         // Anthracite (deep)
         "Label": "game:block-ore-anthracite-*",
@@ -466,6 +587,19 @@
         }
       },
       {
+        // Chromium / Chromite (deep)
+        "Label": "game:block-ore-*-chromite-*",
+        "AssetPaths": ["ore-*-chromite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-chromite-*",
+          "Icon": "ladder",
+          "Color": "darkslategray",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
         // Cinnabar (deep)
         "Label": "game:block-ore-cinnabar-*",
         "AssetPaths": ["ore-cinnabar-*"],
@@ -493,6 +627,45 @@
         }
       },
       {
+        // Diamond (deep)
+        "Label": "game:ore-diamond",
+        "AssetPaths": ["ore-*-diamond-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:ore-diamond",
+          "Icon": "ladder",
+          "Color": "white",
+          "Pinned": false,
+          "CoverageRadius": 8
+        }
+      },
+      {
+        // Emerald (deep)
+        "Label": "game:ore-emerald",
+        "AssetPaths": ["ore-*-emerald-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:ore-emerald",
+          "Icon": "ladder",
+          "Color": "mediumseagreen",
+          "Pinned": false,
+          "CoverageRadius": 8
+        }
+      },
+      {
+        // Fluorite (deep)
+        "Label": "game:block-ore-fluorite-*",
+        "AssetPaths": ["ore-fluorite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-fluorite-*",
+          "Icon": "ladder",
+          "Color": "mediumorchid",
+          "Pinned": false,
+          "CoverageRadius": 16
+        }
+      },
+      {
         // Gold Ore (deep)
         "Label": "egocarib-mapmarkers:gold-ore",
         "AssetPaths": ["ore-*-quartz_nativegold-*"],
@@ -501,6 +674,19 @@
           "Title": "egocarib-mapmarkers:gold-ore",
           "Icon": "ladder",
           "Color": "gold",
+          "Pinned": false,
+          "CoverageRadius": 16
+        }
+      },
+      {
+        // Graphite (deep)
+        "Label": "game:block-ore-graphite-*",
+        "AssetPaths": ["ore-graphite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-graphite-*",
+          "Icon": "ladder",
+          "Color": "dimgray",
           "Pinned": false,
           "CoverageRadius": 16
         }
@@ -517,6 +703,19 @@
           "Color": "maroon",
           "Pinned": false,
           "CoverageRadius": 32
+        }
+      },
+      {
+        // Kernite (deep)
+        "Label": "game:block-ore-kernite-*",
+        "AssetPaths": ["ore-kernite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-kernite-*",
+          "Icon": "ladder",
+          "Color": "lightsteelblue",
+          "Pinned": false,
+          "CoverageRadius": 16
         }
       },
       {
@@ -546,6 +745,19 @@
         }
       },
       {
+        // Manganese / Rhodochrosite (deep)
+        "Label": "game:block-ore-*-rhodochrosite-*",
+        "AssetPaths": ["ore-*-rhodochrosite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-*-rhodochrosite-*",
+          "Icon": "ladder",
+          "Color": "hotpink",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
         // Nickel / Pentlandite (deep)
         "Label": "game:block-ore-*-pentlandite-*",
         "AssetPaths": ["ore-*-pentlandite-*"],
@@ -569,6 +781,32 @@
           "Color": "olivedrab",
           "Pinned": false,
           "CoverageRadius": 32
+        }
+      },
+      {
+        // Peridot (deep)
+        "Label": "game:ore-peridot",
+        "AssetPaths": ["ore-*-olivine_peridot-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:ore-peridot",
+          "Icon": "ladder",
+          "Color": "yellowgreen",
+          "Pinned": false,
+          "CoverageRadius": 8
+        }
+      },
+      {
+        // Phosphorite (deep)
+        "Label": "game:block-ore-phosphorite-*",
+        "AssetPaths": ["ore-phosphorite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-phosphorite-*",
+          "Icon": "ladder",
+          "Color": "sandybrown",
+          "Pinned": false,
+          "CoverageRadius": 16
         }
       },
       {
@@ -608,6 +846,19 @@
           "Color": "khaki",
           "Pinned": false,
           "CoverageRadius": 18
+        }
+      },
+      {
+        // Sylvite (deep)
+        "Label": "game:block-ore-sylvite-*",
+        "AssetPaths": ["ore-sylvite-*", "ore-*-rocksalt_sylvite-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-ore-sylvite-*",
+          "Icon": "ladder",
+          "Color": "lightpink",
+          "Pinned": false,
+          "CoverageRadius": 16
         }
       },
       {
@@ -716,7 +967,8 @@
           "Icon": "vessel",
           "Color": "indianred",
           "Pinned": false,
-          "CoverageRadius": 30
+          "CoverageRadius": 30,
+          "MaxCoverageRadius": 128
         }
       },
       {
@@ -729,7 +981,8 @@
           "Icon": "vessel",
           "Color": "cornflowerblue",
           "Pinned": false,
-          "CoverageRadius": 30
+          "CoverageRadius": 30,
+          "MaxCoverageRadius": 128
         }
       },
       {
@@ -742,7 +995,8 @@
           "Icon": "vessel",
           "Color": "firebrick",
           "Pinned": false,
-          "CoverageRadius": 30
+          "CoverageRadius": 30,
+          "MaxCoverageRadius": 128
         }
       },
       {
@@ -755,7 +1009,8 @@
           "Icon": "rocks",
           "Color": "chocolate",
           "Pinned": false,
-          "CoverageRadius": 30
+          "CoverageRadius": 30,
+          "MaxCoverageRadius": 128
         }
       },
       {
@@ -768,7 +1023,8 @@
           "Icon": "star2",
           "Color": "indigo",
           "Pinned": false,
-          "CoverageRadius": 30
+          "CoverageRadius": 30,
+          "MaxCoverageRadius": 128
         }
       },
       {
@@ -794,7 +1050,85 @@
           "Icon": "ladder",
           "Color": "beige",
           "Pinned": false,
-          "CoverageRadius": 24
+          "CoverageRadius": 24,
+          "MaxCoverageRadius": 128
+        }
+      },
+      {
+        // Rock types (expandable). Matches the solid rock block itself, e.g. when mining it or
+        // sneaking while looking at it. Large radius so a single marker labels a whole region.
+        // Marble and halite (rock salt) are on by default since they're uncommon and sought after.
+        "Label": "egocarib-mapmarkers:rock-types",
+        "AssetPaths": ["rock-*"],
+        "DefaultExpanded": true,
+        "Defaults": {
+          "Enabled": false,
+          "Title": "egocarib-mapmarkers:rock-types",
+          "Icon": "rocks",
+          "Color": "gray",
+          "Pinned": false,
+          "CoverageRadius": 128,
+          "MaxCoverageRadius": 256
+        },
+        "ExpandableEntries": [
+          { "Label": "game:rock-andesite", "AssetPaths": ["rock-andesite"], "Defaults": { "Enabled": false, "Title": "game:rock-andesite", "Icon": "rocks", "Color": "gray", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-basalt", "AssetPaths": ["rock-basalt"], "Defaults": { "Enabled": false, "Title": "game:rock-basalt", "Icon": "rocks", "Color": "darkslategray", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-bauxite", "AssetPaths": ["rock-bauxite"], "Defaults": { "Enabled": false, "Title": "game:rock-bauxite", "Icon": "rocks", "Color": "peru", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-chalk", "AssetPaths": ["rock-chalk"], "Defaults": { "Enabled": false, "Title": "game:rock-chalk", "Icon": "rocks", "Color": "whitesmoke", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-chert", "AssetPaths": ["rock-chert"], "Defaults": { "Enabled": false, "Title": "game:rock-chert", "Icon": "rocks", "Color": "rosybrown", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-claystone", "AssetPaths": ["rock-claystone"], "Defaults": { "Enabled": false, "Title": "game:rock-claystone", "Icon": "rocks", "Color": "indianred", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-conglomerate", "AssetPaths": ["rock-conglomerate"], "Defaults": { "Enabled": false, "Title": "game:rock-conglomerate", "Icon": "rocks", "Color": "tan", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-granite", "AssetPaths": ["rock-granite"], "Defaults": { "Enabled": false, "Title": "game:rock-granite", "Icon": "rocks", "Color": "lightgray", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-greenmarble", "AssetPaths": ["rock-greenmarble"], "Defaults": { "Enabled": true, "Title": "game:rock-greenmarble", "Icon": "rocks", "Color": "seagreen", "Pinned": false, "CoverageRadius": 48, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-halite", "AssetPaths": ["rock-halite"], "Defaults": { "Enabled": true, "Title": "game:rock-halite", "Icon": "rocks", "Color": "mistyrose", "Pinned": false, "CoverageRadius": 48, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-kimberlite", "AssetPaths": ["rock-kimberlite"], "Defaults": { "Enabled": false, "Title": "game:rock-kimberlite", "Icon": "rocks", "Color": "slategray", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-limestone", "AssetPaths": ["rock-limestone"], "Defaults": { "Enabled": false, "Title": "game:rock-limestone", "Icon": "rocks", "Color": "beige", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-obsidian", "AssetPaths": ["rock-obsidian"], "Defaults": { "Enabled": false, "Title": "game:rock-obsidian", "Icon": "rocks", "Color": "black", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-peridotite", "AssetPaths": ["rock-peridotite"], "Defaults": { "Enabled": false, "Title": "game:rock-peridotite", "Icon": "rocks", "Color": "darkolivegreen", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-phyllite", "AssetPaths": ["rock-phyllite"], "Defaults": { "Enabled": false, "Title": "game:rock-phyllite", "Icon": "rocks", "Color": "cadetblue", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-redmarble", "AssetPaths": ["rock-redmarble"], "Defaults": { "Enabled": true, "Title": "game:rock-redmarble", "Icon": "rocks", "Color": "pink", "Pinned": false, "CoverageRadius": 48, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-sandstone", "AssetPaths": ["rock-sandstone"], "Defaults": { "Enabled": false, "Title": "game:rock-sandstone", "Icon": "rocks", "Color": "sandybrown", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-scoria", "AssetPaths": ["rock-scoria"], "Defaults": { "Enabled": false, "Title": "game:rock-scoria", "Icon": "rocks", "Color": "maroon", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-shale", "AssetPaths": ["rock-shale"], "Defaults": { "Enabled": false, "Title": "game:rock-shale", "Icon": "rocks", "Color": "dimgray", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-slate", "AssetPaths": ["rock-slate"], "Defaults": { "Enabled": false, "Title": "game:rock-slate", "Icon": "rocks", "Color": "darkslateblue", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-suevite", "AssetPaths": ["rock-suevite"], "Defaults": { "Enabled": false, "Title": "game:rock-suevite", "Icon": "rocks", "Color": "thistle", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-travertine", "AssetPaths": ["rock-travertine"], "Defaults": { "Enabled": false, "Title": "game:rock-travertine", "Icon": "rocks", "Color": "wheat", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-tuff", "AssetPaths": ["rock-tuff"], "Defaults": { "Enabled": false, "Title": "game:rock-tuff", "Icon": "rocks", "Color": "burlywood", "Pinned": false, "CoverageRadius": 128, "MaxCoverageRadius": 256 } },
+          { "Label": "game:rock-whitemarble", "AssetPaths": ["rock-whitemarble"], "Defaults": { "Enabled": true, "Title": "game:rock-whitemarble", "Icon": "rocks", "Color": "white", "Pinned": false, "CoverageRadius": 48, "MaxCoverageRadius": 256 } }
+        ]
+      },
+      {
+        // Crystals (expandable) - geode crystals, clusters and crystal layers
+        "Label": "egocarib-mapmarkers:crystals",
+        "AssetPaths": ["crystal-*", "crystallayer-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "egocarib-mapmarkers:crystals",
+          "Icon": "star1",
+          "Color": "mediumpurple",
+          "Pinned": false,
+          "CoverageRadius": 16
+        },
+        "ExpandableEntries": [
+          { "Label": "egocarib-mapmarkers:crystal-amethyst", "AssetPaths": ["crystal-amethyst-*", "crystallayer-amethyst-*"], "Defaults": { "Enabled": false, "Title": "egocarib-mapmarkers:crystal-amethyst", "Icon": "star1", "Color": "mediumpurple", "Pinned": false, "CoverageRadius": 16 } },
+          { "Label": "egocarib-mapmarkers:crystal-milkyquartz", "AssetPaths": ["crystal-milkyquartz-*", "crystallayer-milkyquartz-*"], "Defaults": { "Enabled": false, "Title": "egocarib-mapmarkers:crystal-milkyquartz", "Icon": "star1", "Color": "ghostwhite", "Pinned": false, "CoverageRadius": 16 } },
+          { "Label": "egocarib-mapmarkers:crystal-olivine", "AssetPaths": ["crystal-olivine-*", "crystallayer-olivine-*"], "Defaults": { "Enabled": false, "Title": "egocarib-mapmarkers:crystal-olivine", "Icon": "star1", "Color": "olive", "Pinned": false, "CoverageRadius": 16 } },
+          { "Label": "egocarib-mapmarkers:crystal-rosequartz", "AssetPaths": ["crystal-rosequartz-*", "crystallayer-rosequartz-*"], "Defaults": { "Enabled": false, "Title": "egocarib-mapmarkers:crystal-rosequartz", "Icon": "star1", "Color": "lightpink", "Pinned": false, "CoverageRadius": 16 } },
+          { "Label": "egocarib-mapmarkers:crystal-smokyquartz", "AssetPaths": ["crystal-smokyquartz-*", "crystallayer-smokyquartz-*"], "Defaults": { "Enabled": false, "Title": "egocarib-mapmarkers:crystal-smokyquartz", "Icon": "star1", "Color": "darkgray", "Pinned": false, "CoverageRadius": 16 } }
+        ]
+      },
+      {
+        // Bony Soil
+        "Label": "game:block-bonysoil",
+        "AssetPaths": ["bonysoil", "bonysoil-*"],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "game:block-bonysoil",
+          "Icon": "gravestone",
+          "Color": "wheat",
+          "Pinned": false,
+          "CoverageRadius": 30,
+          "MaxCoverageRadius": 128
         }
       },
       {

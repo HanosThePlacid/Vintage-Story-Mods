@@ -35,6 +35,27 @@ namespace Egocarib.AutoMapMarkers.GUI
             ClientAPI = clientAPI;
             mapMarkerDialog = new MapMarkerGUI(ClientAPI, RegisterCustomHotkeys, RegisterDeleteHotkey, RegisterDetectHotkey);
             ClientAPI.Event.BlockTexturesLoaded += RegisterHotkeys;
+            ClientAPI.Event.LevelFinalize += ShowEnableHintIfDisabled;
+        }
+
+        /// <summary>
+        /// The mod ships disabled, and players who never open the settings menu assume it's broken.
+        /// On world join, point them at the settings hotkey (as currently bound) while it's still off.
+        /// </summary>
+        private void ShowEnableHintIfDisabled()
+        {
+            MapMarkerConfig.Settings settings = MapMarkerConfig.GetSettings(ClientAPI, false, false);
+            if (settings == null || !settings.DisableAllModFeatures)
+                return;
+
+            // Delay so the message lands after the join spam instead of scrolling away under it
+            ClientAPI.Event.RegisterCallback(_ =>
+            {
+                if (MapMarkerConfig.GetSettings(ClientAPI, false, false)?.DisableAllModFeatures != true)
+                    return;
+                string hotkey = ClientAPI.Input.GetHotKeyByCode(MapMarkerGUI.HotkeyCode)?.CurrentMapping?.ToString() ?? "Ctrl + Shift + M";
+                ClientAPI.ShowChatMessage(Lang.Get("egocarib-mapmarkers:disabled-hint", hotkey));
+            }, 3000);
         }
 
         private void RegisterHotkeys()

@@ -1,0 +1,82 @@
+// Markers for ores added by Silly Aluminum (https://mods.vintagestory.at/sillyaluminum).
+// Bauxite itself is a vanilla rock - see "Rock types" in the core definitions.
+[
+  {
+    "Category": "Surface Ore",
+    "Entries": [
+      {
+        "Label": "sillyaluminum:block-looseores-nativealuminum-*",
+        "AssetPaths": [
+          "looseores-nativealuminum-*"
+        ],
+        "RequiredMods": [
+          "sillyaluminum"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "sillyaluminum:block-looseores-nativealuminum-*",
+          "Icon": "pick",
+          "Color": "lightsteelblue",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      },
+      {
+        "Label": "sillyaluminum:block-looseores-hematite_pyrolusite-*",
+        "AssetPaths": [
+          "looseores-hematite_pyrolusite-*"
+        ],
+        "RequiredMods": [
+          "sillyaluminum"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "sillyaluminum:block-looseores-hematite_pyrolusite-*",
+          "Icon": "pick",
+          "Color": "darkslategray",
+          "Pinned": false,
+          "CoverageRadius": 9
+        }
+      }
+    ]
+  },
+  {
+    "Category": "Deep Ore",
+    "Entries": [
+      {
+        "Label": "sillyaluminum:block-ore-*-nativealuminum-*",
+        "AssetPaths": [
+          "ore-*-nativealuminum-*"
+        ],
+        "RequiredMods": [
+          "sillyaluminum"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "sillyaluminum:block-ore-*-nativealuminum-*",
+          "Icon": "ladder",
+          "Color": "lightsteelblue",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      },
+      {
+        "Label": "sillyaluminum:block-ore-hematite_pyrolusite-*",
+        "AssetPaths": [
+          "ore-hematite_pyrolusite-*"
+        ],
+        "RequiredMods": [
+          "sillyaluminum"
+        ],
+        "Defaults": {
+          "Enabled": true,
+          "Title": "sillyaluminum:block-ore-hematite_pyrolusite-*",
+          "Icon": "ladder",
+          "Color": "darkslategray",
+          "Pinned": false,
+          "CoverageRadius": 12
+        }
+      }
+    ]
+  }
+]

@@ -127,11 +127,12 @@ namespace Egocarib.AutoMapMarkers.Settings
                     var addonCategories = LoadDefinitionFile(addonFile);
                     if (addonCategories == null) continue;
 
-                    MergeAddonCategories(addonCategories, mergedCategories, Path.GetFileName(addonFile));
+                    MergeAddonCategories(addonCategories, mergedCategories, Path.GetFileName(addonFile), api);
                 }
             }
 
             var result = mergedCategories.Values.ToList();
+            RemoveEntriesMissingRequiredMods(result, api);
             int totalEntries = result.Sum(c => c.Entries.Count);
             MessageUtil.Log($"Marker definitions loaded: {result.Count} categories, {totalEntries} entries.");
             return result;
@@ -172,7 +173,7 @@ namespace Egocarib.AutoMapMarkers.Settings
                 var addonCategories = LoadDefinitionJson(asset.ToText(), assetPath);
                 if (addonCategories == null) continue;
 
-                MergeAddonCategories(addonCategories, mergedCategories, assetPath);
+                MergeAddonCategories(addonCategories, mergedCategories, assetPath, api);
                 MessageUtil.Log($"    Loaded asset-based addon definitions from '{assetPath}'");
             }
         }
@@ -182,7 +183,7 @@ namespace Egocarib.AutoMapMarkers.Settings
         /// is deferred to <see cref="RunDeferredConflictCheck"/>, which runs after blocks/entities
         /// are registered.
         /// </summary>
-        private static void MergeAddonCategories(List<MarkerCategoryDef> addonCategories, Dictionary<MarkerCategory, MarkerCategoryDef> mergedCategories, string sourceName)
+        private static void MergeAddonCategories(List<MarkerCategoryDef> addonCategories, Dictionary<MarkerCategory, MarkerCategoryDef> mergedCategories, string sourceName, ICoreAPI api)
         {
             foreach (var category in addonCategories)
             {
@@ -223,7 +224,7 @@ namespace Egocarib.AutoMapMarkers.Settings
                 {
                     foreach (var patch in category.Patches)
                     {
-                        ApplyPatch(patch, mergedCategories, category.Category, sourceName);
+                        ApplyPatch(patch, mergedCategories, category.Category, sourceName, api);
                     }
                 }
             }
@@ -413,8 +414,11 @@ namespace Egocarib.AutoMapMarkers.Settings
         /// Applies a single patch to an existing entry within the specified category.
         /// Patches are strictly additive — they can add asset paths and expandable sub-entries.
         /// </summary>
-        private static void ApplyPatch(MarkerPatchDef patch, Dictionary<MarkerCategory, MarkerCategoryDef> mergedCategories, MarkerCategory categoryKey, string sourceName)
+        private static void ApplyPatch(MarkerPatchDef patch, Dictionary<MarkerCategory, MarkerCategoryDef> mergedCategories, MarkerCategory categoryKey, string sourceName, ICoreAPI api)
         {
+            if (!RequiredModsPresent(patch.RequiredMods, api))
+                return;
+
             if (string.IsNullOrEmpty(patch.TargetLabel))
             {
                 MessageUtil.LogError($"    Patch from '{sourceName}' has no Target — skipped.");
@@ -501,6 +505,30 @@ namespace Egocarib.AutoMapMarkers.Settings
                 }
             }
             return (null, false);
+        }
+
+        /// <summary>
+        /// True when <paramref name="requiredMods"/> is empty or any one of the listed mods is loaded.
+        /// </summary>
+        private static bool RequiredModsPresent(List<string> requiredMods, ICoreAPI api)
+        {
+            if (requiredMods == null || requiredMods.Count == 0)
+                return true;
+            return requiredMods.Any(modId => api.ModLoader.IsModEnabled(modId));
+        }
+
+        /// <summary>
+        /// Drops entries (and sub-entries) whose RequiredMods aren't loaded, so compat definitions
+        /// for other mods only show up in the menu when those mods are actually present.
+        /// </summary>
+        private static void RemoveEntriesMissingRequiredMods(List<MarkerCategoryDef> categories, ICoreAPI api)
+        {
+            foreach (var category in categories)
+            {
+                category.Entries.RemoveAll(e => !RequiredModsPresent(e.RequiredMods, api));
+                foreach (var entry in category.Entries)
+                    entry.ExpandableEntries?.RemoveAll(e => !RequiredModsPresent(e.RequiredMods, api));
+            }
         }
 
         /// <summary>

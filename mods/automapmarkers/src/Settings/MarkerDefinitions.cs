@@ -112,6 +112,8 @@ namespace Egocarib.AutoMapMarkers.Settings
         public string TargetLabel { get; set; }
         public List<string> AddAssetPaths { get; set; }
         public List<MarkerEntryDef> AddExpandableEntries { get; set; }
+        /// <summary>Mod IDs, any one of which must be loaded for this patch to apply. Empty = always.</summary>
+        public List<string> RequiredMods { get; set; }
     }
 
     public class MarkerEntryDef
@@ -129,6 +131,12 @@ namespace Egocarib.AutoMapMarkers.Settings
         public MarkerDefaultsDef Defaults { get; set; } = new MarkerDefaultsDef();
         public List<MarkerEntryDef> ExpandableEntries { get; set; }
         public bool DefaultExpanded { get; set; } = false;
+        /// <summary>
+        /// Mod IDs, any one of which must be loaded for this entry to be offered. Lets compat
+        /// definitions ship unconditionally without cluttering the menu for players who don't
+        /// have the other mod. Empty = always offered.
+        /// </summary>
+        public List<string> RequiredMods { get; set; }
         /// <summary>Whether this entry came from the protected _core.json file.</summary>
         internal bool IsCore { get; set; } = false;
         /// <summary>The source that provided this entry (e.g. "_core.json", a mod asset path, or a ModConfig filename).</summary>
@@ -143,5 +151,13 @@ namespace Egocarib.AutoMapMarkers.Settings
         public string Color { get; set; } = "black";
         public bool Pinned { get; set; } = false;
         public int CoverageRadius { get; set; } = 1;
+        /// <summary>
+        /// Upper bound of the coverage radius slider. Point resources (bushes, ore bits) stay at 64;
+        /// area resources (clay, peat, trees, rock types) raise it so one marker can cover a whole
+        /// deposit or forest.
+        /// </summary>
+        public int MaxCoverageRadius { get; set; } = DefaultMaxCoverageRadius;
+
+        public const int DefaultMaxCoverageRadius = 64;
     }
 }

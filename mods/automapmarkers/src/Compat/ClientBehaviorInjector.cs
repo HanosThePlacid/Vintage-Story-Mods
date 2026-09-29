@@ -36,12 +36,17 @@ namespace Egocarib.AutoMapMarkers.Compat
         ///   "log-resin"      from patches/log-withresin.json (covers log-resin-* and
         ///                    log-resinharvested-*, matching that patch's "/behaviorsByType/*/-")
         ///   "looseores-"     from patches/looseores.json     (blocktypes/stone/looseores)
+        /// plus tree hollows from other mods, so opening one marks it (config/automapmarkers/compat-treehollows.json):
+        ///   "standardhollowchest" NDL TreeHollows (standardhollowchest-* and standardhollowchestfilled-*)
+        ///   "treehollowgrown-"    Primitive Survival
         /// </summary>
         private static readonly (string prefix, Type behaviorType)[] BlockTargets =
         {
             ("fruitingbush-", typeof(HarvestBehavior)),
             ("log-resin", typeof(HarvestBehavior)),
             ("looseores-", typeof(LooseOreBehavior)),
+            ("standardhollowchest", typeof(HarvestBehavior)),
+            ("treehollowgrown-", typeof(HarvestBehavior)),
         };
 
         private const string TraderBehaviorName = "egocarib_TraderMarkerBehavior";
