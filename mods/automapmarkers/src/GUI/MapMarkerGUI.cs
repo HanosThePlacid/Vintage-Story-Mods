@@ -419,11 +419,17 @@ namespace Egocarib.AutoMapMarkers.GUI
                 .EndChildElements();
                 markerOptionRowBounds = markerOptionRowBounds.BelowCopy().WithFixedHeight(rowHeight);
 
+                // Custom markers are always offered in the same fixed order (1, 2, 3).
+                // Use a stable, index-based entryKey instead of customEntry.Key (which is a
+                // localized string and may collide across translations).
+                int customIndex = 1;
                 foreach (var customEntry in Layout.CustomEntries)
                 {
                     ComposeMarkerRow(customEntry.Key, customEntry.Value, ref markerOptionRowBounds, disabledFont,
                         markerOptionPromptBounds, markerOptionToggleBounds, markerOptionDisabledMessage,
-                        markerOptionIconColorButtonBounds);
+                        markerOptionIconColorButtonBounds,
+                        entryKey: "custom-marker-" + customIndex.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    customIndex++;
                 }
                 return;
             }
@@ -480,7 +486,8 @@ namespace Egocarib.AutoMapMarkers.GUI
                     else
                     {
                         ComposeMarkerRow(entry.DisplayName, entry.Setting, ref markerOptionRowBounds, disabledFont,
-                            promptBounds, toggleBounds, disabledBounds, iconBounds);
+                            promptBounds, toggleBounds, disabledBounds, iconBounds,
+                            entryKey: entry.EntryLabel);
                     }
                 }
             }
@@ -531,8 +538,14 @@ namespace Egocarib.AutoMapMarkers.GUI
                 string subKeyPrefix = entry.EntryLabel + "-";
                 foreach (var sub in entry.SubEntries)
                 {
+                    // Build the GUI key from parent.EntryLabel + sub.EntryLabel rather than
+                    // sub.DisplayName. The localized DisplayName can collide between sibling
+                    // sub-entries (e.g. two olivine ore variants both resolve to
+                    // "олівінової руди" in Ukrainian), which triggers
+                    // ArgumentException: "An item with the same key has already been added".
                     ComposeMarkerRow(sub.DisplayName, sub.Setting, ref markerOptionRowBounds, disabledFont,
-                        subPrompt, subToggle, subDisabled, subIcon, keyPrefix: subKeyPrefix);
+                        subPrompt, subToggle, subDisabled, subIcon,
+                        entryKey: subKeyPrefix + sub.EntryLabel);
                 }
             }
             else
@@ -548,7 +561,8 @@ namespace Egocarib.AutoMapMarkers.GUI
                     // Capture current row bounds before ref is modified by ComposeMarkerRow
                     var currentRowBounds = markerOptionRowBounds;
                     ComposeMarkerRow(entry.DisplayName, entry.Setting, ref markerOptionRowBounds, disabledFont,
-                        promptBounds, toggleBounds, disabledBounds, iconBounds, keyPrefix: "",
+                        promptBounds, toggleBounds, disabledBounds, iconBounds,
+                        entryKey: entry.EntryLabel,
                         expandButton: () => {
                             SingleComposer.AddExpandButton(
                                 onClick: () => { ToggleExpand(capturedEntry); },
@@ -586,13 +600,27 @@ namespace Egocarib.AutoMapMarkers.GUI
         /// <summary>
         /// Composes a single marker option row (label + toggle + icon button or disabled text).
         /// </summary>
+        /// <param name="markerSettingTitle">Localized display text shown to the user. NOT used as a GUI key.</param>
+        /// <param name="entryKey">Stable, unique identifier (typically the marker definition's Label)
+        /// used as the base for all GUI element keys registered for this row. Must be unique per row.
+        /// Falls back to <paramref name="markerSettingTitle"/> only when null/empty, which preserves
+        /// backward compatibility for any external caller that did not pass an explicit key.</param>
         private void ComposeMarkerRow(string markerSettingTitle, AutoMapMarkerSetting markerSetting,
             ref ElementBounds markerOptionRowBounds, CairoFont disabledFont,
             ElementBounds markerOptionPromptBounds, ElementBounds markerOptionToggleBounds,
             ElementBounds markerOptionDisabledMessage, ElementBounds markerOptionIconColorButtonBounds,
-            string keyPrefix = "", Action expandButton = null)
+            string entryKey = null, Action expandButton = null)
         {
-            string keyBase = keyPrefix + markerSettingTitle;
+            // IMPORTANT: GUI element keys must be derived from a stable, unique identifier
+            // (the marker definition's Label) — never from the localized DisplayName.
+            // Different marker definitions can resolve to the same localized string in some
+            // languages (e.g. surface olivine ore "game:block-looseores-olivine-peridotite-*"
+            // and deep olivine ore "game:ore-olivine" both translate to "олівінової руди"
+            // in Ukrainian). Building keys from the DisplayName caused
+            // System.ArgumentException: An item with the same key has already been added.
+            //   Key: олівінової руди-auto-markers-label
+            // when the second row tried to register under the same key.
+            string keyBase = !string.IsNullOrEmpty(entryKey) ? entryKey : markerSettingTitle;
             double[] markerColorRGBADoubles = markerSetting.MarkerColorInteger.HasValue
                 ? ColorUtil.ToRGBADoubles(markerSetting.MarkerColorInteger.Value)
                 : new double[] { 1.0, 1.0, 1.0, 1.0 };
@@ -901,7 +929,11 @@ namespace Egocarib.AutoMapMarkers.GUI
         /// </summary>
         private void OnMarkerToggleEnabled(bool isSelected)
         {
-            // Update all layout tab entries (including sub-entries)
+            // Update all layout tab entries (including sub-entries).
+            // Look up each switch by its stable EntryLabel-derived key, mirroring the keys
+            // produced by ComposeMarkerRow. The localized DisplayName is NOT a safe lookup key
+            // because two distinct definitions may share the same translation (which is what
+            // originally crashed the GUI when the second element was added).
             foreach (var tab in Layout.Tabs)
                 foreach (var subgroup in tab.Subgroups)
                     foreach (var entry in subgroup.Entries)
@@ -913,27 +945,29 @@ namespace Egocarib.AutoMapMarkers.GUI
                                 string subKeyPrefix = entry.EntryLabel + "-";
                                 foreach (var sub in entry.SubEntries)
                                 {
-                                    var sw = SingleComposer.GetInteractiveSwitch(subKeyPrefix + sub.DisplayName + "-auto-markers-enabled");
+                                    var sw = SingleComposer.GetInteractiveSwitch(subKeyPrefix + sub.EntryLabel + "-auto-markers-enabled");
                                     if (sw != null) sub.Setting.Enabled = sw.On;
                                 }
                             }
                             else if (entry.Setting != null)
                             {
-                                var sw = SingleComposer.GetInteractiveSwitch(entry.DisplayName + "-auto-markers-enabled");
+                                var sw = SingleComposer.GetInteractiveSwitch(entry.EntryLabel + "-auto-markers-enabled");
                                 if (sw != null) entry.Setting.Enabled = sw.On;
                             }
                         }
                         else if (entry.Setting != null)
                         {
-                            var sw = SingleComposer.GetInteractiveSwitch(entry.DisplayName + "-auto-markers-enabled");
+                            var sw = SingleComposer.GetInteractiveSwitch(entry.EntryLabel + "-auto-markers-enabled");
                             if (sw != null) entry.Setting.Enabled = sw.On;
                         }
                     }
-            // Update custom entries
+            // Update custom entries — index-based key matches what ComposeMarkerOptions registers.
+            int customIndex = 1;
             foreach (var customEntry in Layout.CustomEntries)
             {
-                var sw = SingleComposer.GetInteractiveSwitch(customEntry.Key + "-auto-markers-enabled");
+                var sw = SingleComposer.GetInteractiveSwitch("custom-marker-" + customIndex.ToString(System.Globalization.CultureInfo.InvariantCulture) + "-auto-markers-enabled");
                 if (sw != null) customEntry.Value.Enabled = sw.On;
+                customIndex++;
             }
             SetupDialog(); // Redraw GUI
         }
