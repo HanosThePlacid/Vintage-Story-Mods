@@ -83,5 +83,7 @@
   "egocarib-mapmarkers:custom-marker-1": "사용자 지정 경유지 1",
   "egocarib-mapmarkers:custom-marker-2": "사용자 지정 경유지 2",
   "egocarib-mapmarkers:custom-marker-3": "사용자 지정 경유지 3",
-  "egocarib-mapmarkers:custom-gui-description": "각 경유지에 해당하는 단축키를 게임 설정 메뉴에서 지정하세요(Esc > 설정 > 조작)."
+  "egocarib-mapmarkers:custom-gui-description": "각 경유지에 해당하는 단축키를 게임 설정 메뉴에서 지정하세요(Esc > 설정 > 조작).",
+  "egocarib-mapmarkers:reset-defaults": "Reset to defaults",
+  "egocarib-mapmarkers:reset-defaults-done": "Auto Map Marker settings were reset to defaults."
 }

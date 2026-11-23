@@ -42,6 +42,7 @@ namespace Egocarib.AutoMapMarkers.Events
 
             Vec3d vecPos;
             ThingIdentifier thing;
+            BlockPos sourceBlockPos = null;
             if (blockSel != null)
             {
                 BlockPos pos = blockSel.Position;
@@ -50,6 +51,7 @@ namespace Egocarib.AutoMapMarkers.Events
                     return;
                 vecPos = new Vec3d(pos.X, pos.Y, pos.Z);
                 thing = new ThingIdentifier(block, pos);
+                sourceBlockPos = pos;
             }
             else  // entitySel != null
             {
@@ -68,6 +70,7 @@ namespace Egocarib.AutoMapMarkers.Events
                     BlockPos downOnePos = blockSel.Position.DownCopy();
                     Block blockBelow = MapMarkerMod.CoreClientAPI.World.BlockAccessor.GetBlock(downOnePos);
                     thing = new ThingIdentifier(blockBelow, downOnePos);
+                    sourceBlockPos = downOnePos;
                 }
                 catch
                 {
@@ -85,7 +88,9 @@ namespace Egocarib.AutoMapMarkers.Events
             if (settings == null)
                 return;
 
-            MapMarkerMod.Network?.RequestWaypointFromServer(vecPos, settings, config.ChatNotifyOnWaypointCreation, thing.DynamicTitleComponent);
+            MapMarkerMod.Network?.RequestWaypointFromServer(
+                vecPos, settings, config.ChatNotifyOnWaypointCreation, thing.DynamicTitleComponent,
+                sourceBlockPos: sourceBlockPos);
         }
     }
 }

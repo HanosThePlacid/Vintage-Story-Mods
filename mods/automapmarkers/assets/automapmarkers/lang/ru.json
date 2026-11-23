@@ -83,5 +83,7 @@
   "egocarib-mapmarkers:custom-marker-1": "Пользов. метка 1",
   "egocarib-mapmarkers:custom-marker-2": "Пользов. метка 2",
   "egocarib-mapmarkers:custom-marker-3": "Пользов. метка 3",
-  "egocarib-mapmarkers:custom-gui-description": "Настройте горячие клавиши для этих меток в настройках игры (Esc > Настройки > Управление)."
+  "egocarib-mapmarkers:custom-gui-description": "Настройте горячие клавиши для этих меток в настройках игры (Esc > Настройки > Управление).",
+  "egocarib-mapmarkers:reset-defaults": "Reset to defaults",
+  "egocarib-mapmarkers:reset-defaults-done": "Auto Map Marker settings were reset to defaults."
 }

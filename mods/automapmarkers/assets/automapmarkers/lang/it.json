@@ -59,5 +59,7 @@
   "egocarib-mapmarkers:custom-marker-1": "Marcatore Personalizzato 1",
   "egocarib-mapmarkers:custom-marker-2": "Marcatore Personalizzato 2",
   "egocarib-mapmarkers:custom-marker-3": "Marcatore Personalizzato 3",
-  "egocarib-mapmarkers:custom-gui-description": "Configura i tasti di scelta rapida per questi indicatori nel menu impostazioni del gioco (Esc > Impostazioni > Controlli)."
+  "egocarib-mapmarkers:custom-gui-description": "Configura i tasti di scelta rapida per questi indicatori nel menu impostazioni del gioco (Esc > Impostazioni > Controlli).",
+  "egocarib-mapmarkers:reset-defaults": "Reset to defaults",
+  "egocarib-mapmarkers:reset-defaults-done": "Auto Map Marker settings were reset to defaults."
 }

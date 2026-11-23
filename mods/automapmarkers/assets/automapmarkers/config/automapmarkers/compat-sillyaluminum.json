@@ -18,7 +18,7 @@
           "Icon": "pick",
           "Color": "lightsteelblue",
           "Pinned": false,
-          "CoverageRadius": 9
+          "CoverageRadius": 40
         }
       },
       {
@@ -35,7 +35,7 @@
           "Icon": "pick",
           "Color": "darkslategray",
           "Pinned": false,
-          "CoverageRadius": 9
+          "CoverageRadius": 40
         }
       }
     ]
@@ -57,7 +57,7 @@
           "Icon": "ladder",
           "Color": "lightsteelblue",
           "Pinned": false,
-          "CoverageRadius": 12
+          "CoverageRadius": 80
         }
       },
       {
@@ -74,7 +74,7 @@
           "Icon": "ladder",
           "Color": "darkslategray",
           "Pinned": false,
-          "CoverageRadius": 12
+          "CoverageRadius": 80
         }
       }
     ]

@@ -1,10 +1,11 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.MathTools;
 using Egocarib.AutoMapMarkers.Settings;
 using Egocarib.AutoMapMarkers.Utilities;
 using System;
+using System.Reflection;
 
 namespace Egocarib.AutoMapMarkers.Patches
 {
@@ -17,8 +18,7 @@ namespace Egocarib.AutoMapMarkers.Patches
         /// <summary>
         /// Captures the player's current mount before TryUnmount clears it.
         /// </summary>
-        [HarmonyPrefix]
-        [HarmonyPatch("TryUnmount")]
+        // Applied by BoatUnmountPatch (TryUnmount has an overload since 1.23).
         public static void TryUnmountPrefix(EntityAgent __instance)
         {
             CapturedSeat = null;
@@ -32,8 +32,6 @@ namespace Egocarib.AutoMapMarkers.Patches
         /// <summary>
         /// After dismounting from a boat, creates a map marker at the boat's position.
         /// </summary>
-        [HarmonyPostfix]
-        [HarmonyPatch("TryUnmount")]
         public static void TryUnmountPostfix(EntityAgent __instance, bool __result)
         {
             IMountableSeat seat = CapturedSeat;
@@ -117,5 +115,24 @@ namespace Egocarib.AutoMapMarkers.Patches
 
             return MapMarkerConfig.BoatRegistry?.TryMatch(code)?.Setting;
         }
+    }
+
+    /// <summary>
+    /// TryUnmount patch. 1.23 added TryUnmount(bool force) and made TryUnmount() call it, so a
+    /// name-only patch is ambiguous there (Harmony throws). Patch the overload that does the work:
+    /// TryUnmount(bool) when it exists, otherwise TryUnmount() (1.22).
+    /// </summary>
+    [HarmonyPatch]
+    public static class BoatUnmountPatch
+    {
+        public static MethodBase TargetMethod()
+        {
+            return AccessTools.Method(typeof(EntityAgent), "TryUnmount", new[] { typeof(bool) })
+                ?? AccessTools.Method(typeof(EntityAgent), "TryUnmount", Type.EmptyTypes);
+        }
+
+        public static void Prefix(EntityAgent __instance) => Boat.TryUnmountPrefix(__instance);
+
+        public static void Postfix(EntityAgent __instance, bool __result) => Boat.TryUnmountPostfix(__instance, __result);
     }
 }

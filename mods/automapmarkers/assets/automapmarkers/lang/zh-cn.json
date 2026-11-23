@@ -59,5 +59,7 @@
   "egocarib-mapmarkers:custom-marker-1": "自定义标记 1",
   "egocarib-mapmarkers:custom-marker-2": "自定义标记 2",
   "egocarib-mapmarkers:custom-marker-3": "自定义标记 3",
-  "egocarib-mapmarkers:custom-gui-description": "在游戏设置菜单中配置这些标记的快捷键(Esc > 设置 > 控制)。"
+  "egocarib-mapmarkers:custom-gui-description": "在游戏设置菜单中配置这些标记的快捷键(Esc > 设置 > 控制)。",
+  "egocarib-mapmarkers:reset-defaults": "Reset to defaults",
+  "egocarib-mapmarkers:reset-defaults-done": "Auto Map Marker settings were reset to defaults."
 }

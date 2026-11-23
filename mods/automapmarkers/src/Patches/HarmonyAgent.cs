@@ -1,4 +1,5 @@
-﻿using Egocarib.AutoMapMarkers.Utilities;
+﻿using System;
+using Egocarib.AutoMapMarkers.Utilities;
 using HarmonyLib;
 using System.Reflection;
 using Vintagestory.API.Common;
@@ -13,12 +14,37 @@ namespace Egocarib.AutoMapMarkers.Patches
         /// <summary>
         /// Applies the mod's Harmony patches.
         /// </summary>
+        /// <summary>
+        /// Like PatchAll, but one class at a time: a patch whose target changed in a game update
+        /// is logged and skipped instead of aborting every patch after it. Limited to this mod's
+        /// namespace, so it stays correct when the DLL is merged into a mod pack.
+        /// </summary>
+        private static void PatchEachClass()
+        {
+            string ns = typeof(HarmonyAgent).Namespace;
+            foreach (Type type in AccessTools.GetTypesFromAssembly(Assembly.GetAssembly(typeof(HarmonyAgent))))
+            {
+                if (type.Namespace == null || !(type.Namespace == ns || type.Namespace.StartsWith(ns + ".")))
+                    continue;
+                if (!type.IsDefined(typeof(HarmonyPatch), false))
+                    continue;
+                try
+                {
+                    harmonyInstance.CreateClassProcessor(type).Patch();
+                }
+                catch (Exception e)
+                {
+                    MessageUtil.LogError($"Could not apply patch {type.Name} (game version change?): {e.Message}");
+                }
+            }
+        }
+
         public static void Harmonize(EnumAppSide side)
         {
             if (harmonyInstance == null)
             {
                 harmonyInstance = new Harmony(harmonyID);
-                harmonyInstance.PatchAll(Assembly.GetAssembly(typeof(HarmonyAgent)));
+                PatchEachClass();
             }
 
             // Chat suppression targets a method resolved at runtime, so it can't go through PatchAll,

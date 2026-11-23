@@ -68,6 +68,16 @@ namespace Egocarib.AutoMapMarkers.Patches
             var settings = thing.GetMapMarkerSettings();
             string dynamicTitleComponent = thing.DynamicTitleComponent;
 
+            // Loose ores and scythe-harvested plants place their marker *because* the
+            // block is collected. Tracking those would delete the marker we just made.
+            bool trackForBreakRemoval =
+                block.Code?.Path?.StartsWith("looseores-", System.StringComparison.OrdinalIgnoreCase) != true
+                && block is not BlockPlant
+                && block is not BlockCrop
+                && block is not BlockMushroom
+                && block is not BlockReeds
+                && block is not BlockFruitTreePart;
+
             // Attempt to create a waypoint
             if (MapMarkerMod.Network != null)
             {
@@ -76,7 +86,8 @@ namespace Egocarib.AutoMapMarkers.Patches
                     position: blockPos.ToVec3d(),
                     settings: settings,
                     sendChatMessage: config.ChatNotifyOnWaypointCreation,
-                    dynamicTitleComponent: dynamicTitleComponent
+                    dynamicTitleComponent: dynamicTitleComponent,
+                    sourceBlockPos: trackForBreakRemoval ? blockPos : null
                 );
             }
         }

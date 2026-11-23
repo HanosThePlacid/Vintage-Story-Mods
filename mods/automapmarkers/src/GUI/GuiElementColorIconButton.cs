@@ -116,12 +116,20 @@ namespace Egocarib.AutoMapMarkers.GUI
                 double h = Bounds.InnerHeight - GuiElement.scaled(11.0);
                 double w = h;
 
-                api.Gui.Icons.DrawIcon(ctx, icon, x, y, w, h, GuiStyle.DialogDefaultTextColor);
+                try
+                {
+                    api.Gui.Icons.DrawIcon(ctx, icon, x, y, w, h, GuiStyle.DialogDefaultTextColor);
+                }
+                catch (System.Exception e)
+                {
+                    // Unknown/unregistered icon (e.g. from another mod or server): draw no icon, don't crash.
+                    api.Logger.Warning("[Auto Map Markers] Could not draw map icon '{0}': {1}", icon, e.Message);
+                }
 
                 //Draw color swatch
                 x += w + GuiElement.scaled(10.0);
                 ctx.Rectangle(x, y, w, h);
-                ctx.SetSourceRGBA(iconColor);
+                ctx.SetSourceRGBA(iconColor != null && iconColor.Length >= 4 ? iconColor : GuiStyle.DialogDefaultTextColor);
                 ctx.FillPreserve();
                 ctx.SetSourceRGBA(GuiStyle.DialogBorderColor);
                 ctx.Stroke();

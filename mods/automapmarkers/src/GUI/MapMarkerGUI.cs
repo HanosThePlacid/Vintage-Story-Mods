@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cairo;
@@ -32,6 +32,7 @@ namespace Egocarib.AutoMapMarkers.GUI
         public string CurrentTab;
 
         private ElementBounds scrollContentBounds;
+        private ElementBounds scrollClipBounds;
         private float currentScrollY;
         private Action RegisterCustomHotkeys;
         private Action RegisterDeleteHotkey;
@@ -86,7 +87,7 @@ namespace Egocarib.AutoMapMarkers.GUI
 
         private string GetWaypointIconName(string iconName)
         {
-            return $"wp{iconName.UcFirst()}";
+            return $"wp{(string.IsNullOrEmpty(iconName) ? "circle" : iconName).UcFirst()}";
         }
 
         private void LoadColorOptions()
@@ -144,6 +145,7 @@ namespace Egocarib.AutoMapMarkers.GUI
         /// </summary>
         private void SetupDialog()
         {
+            afterCompose.Clear();
             CairoFont disabledFont = CairoFont.WhiteSmallishText().Clone().WithSlant(FontSlant.Italic);
             disabledFont.Color[3] = 0.2;
 
@@ -283,7 +285,12 @@ namespace Egocarib.AutoMapMarkers.GUI
 
             SingleComposer.GetToggleButton(CurrentTab + "-toggle-tab").SetValue(true);
 
+            string resetLabel = Lang.Get("egocarib-mapmarkers:reset-defaults");
             SingleComposer
+                .AddButton(text: resetLabel,
+                    onClick: OnResetDefaultsClicked,
+                    bounds: ElementBounds.Fixed(0.0, 0.0, GetFontTextWidth(CairoFont.ButtonText(), resetLabel), 40.0)
+                        .WithFixedPadding(4.0, 3.0).WithAlignment(EnumDialogArea.RightTop).WithFixedAlignmentOffset(-90.0, 0.0))
                 .AddButton(text: Lang.Get("general-close"),
                     onClick: OnSaveButton,
                     bounds: ElementBounds.Fixed(0.0, 0.0, 80.0, 40.0).WithFixedPadding(4.0, 3.0).WithAlignment(EnumDialogArea.RightTop))
@@ -316,6 +323,7 @@ namespace Egocarib.AutoMapMarkers.GUI
             SingleComposer
                 .BeginChildElements(mainContentBounds);
 
+            scrollClipBounds = isMarkerTab ? clipBounds : null;
             if (isMarkerTab)
             {
                 scrollContentBounds = markerOptionAreaBounds;
@@ -346,6 +354,13 @@ namespace Egocarib.AutoMapMarkers.GUI
                 .EndChildElements() // mainContentBounds
                 .EndChildElements() // bgBounds
                 .Compose();
+
+            foreach (var action in afterCompose)
+            {
+                try { action(); }
+                catch (Exception e) { MessageUtil.LogError($"Settings menu setup step failed: {e}"); }
+            }
+            afterCompose.Clear();
 
             if (isMarkerTab)
             {
@@ -391,6 +406,7 @@ namespace Egocarib.AutoMapMarkers.GUI
                 totalRows += tab.Subgroups.Count; // one row per subheading
                 extraHeight = (tab.Subgroups.Count - 1) * rowHeight * 0.4; // spacing between subgroups
             }
+            totalRows++; // "all markers in this tab" coverage radius row
             return (float)(totalRows * rowHeight + extraHeight + 9); // +9 for inset top padding
         }
 
@@ -437,6 +453,18 @@ namespace Egocarib.AutoMapMarkers.GUI
             markerOptionRowBounds = markerOptionRowBounds.FlatCopy().WithFixedHeight(9);
             markerOptionRowBounds = markerOptionRowBounds.BelowCopy().WithFixedHeight(rowHeight);
 
+            radiusRowKeys.Clear();
+            // Whole tab at once: set every marker's coverage radius, then tweak single rows below.
+            SingleComposer.BeginChildElements(markerOptionRowBounds = markerOptionRowBounds.FlatCopy().WithFixedHeight(rowHeight))
+            .AddDynamicText(
+                text: Lang.Get("egocarib-mapmarkers:radius-all-in-tab"),
+                font: CairoFont.WhiteSmallishText().Clone().WithWeight(FontWeight.Bold),
+                bounds: markerOptionPromptBounds.FlatCopy().WithParent(markerOptionRowBounds),
+                key: "group-radius-tab-label");
+            ComposeGroupRadiusSlider("group-radius-tab", CollectSettings(tab.Subgroups), markerOptionRowBounds, markerOptionIconColorButtonBounds);
+            SingleComposer.EndChildElements();
+            markerOptionRowBounds = markerOptionRowBounds.BelowCopy().WithFixedHeight(rowHeight);
+
             bool isFirstSubgroup = true;
             foreach (var subgroup in tab.Subgroups)
             {
@@ -457,8 +485,12 @@ namespace Egocarib.AutoMapMarkers.GUI
                         text: subheadingText,
                         font: subheadingFont,
                         bounds: ElementBounds.Fixed(0, rowHeight * 0.25, dgInnerWidth, rowHeight).WithParent(markerOptionRowBounds),
-                        key: "subheading-" + subgroup.SubgroupName)
-                    .EndChildElements();
+                        key: "subheading-" + subgroup.SubgroupName);
+                    // Whole subgroup at once, on the subheading row (same column as the row sliders).
+                    ComposeGroupRadiusSlider("group-radius-" + subgroup.SubgroupName,
+                        CollectSettings(new[] { subgroup }), markerOptionRowBounds,
+                        markerOptionIconColorButtonBounds.FlatCopy().WithFixedOffset(15, 0));
+                    SingleComposer.EndChildElements();
                     markerOptionRowBounds = markerOptionRowBounds.BelowCopy().WithFixedHeight(rowHeight);
                     isFirstSubgroup = false;
                 }
@@ -626,6 +658,43 @@ namespace Egocarib.AutoMapMarkers.GUI
                     style: EnumButtonStyle.Normal,
                     key: keyBase + "-auto-markers-icon")
 
+                // Coverage radius: no new marker of this type within this many blocks of an existing one.
+                // Sits right of the icon/color button, past where an expand (+) button can appear.
+                .AddScrollSafeSlider(
+                    onNewSliderValue: index =>
+                    {
+                        int[] steps = GetRadiusSteps(markerSetting);
+                        int radius = steps[GameMath.Clamp(index, 0, steps.Length - 1)];
+                        markerSetting.MarkerCoverageRadius = radius;
+                        SetRadiusInputText(keyBase + "-auto-markers-radius-input", radius.ToString());
+                        return true;
+                    },
+                    bounds: ElementBounds.Fixed(
+                            markerOptionIconColorButtonBounds.fixedX + RadiusSliderOffsetX,
+                            markerOptionIconColorButtonBounds.fixedY + 6,
+                            RadiusSliderWidth, 20)
+                        .WithParent(markerOptionRowBounds),
+                    key: keyBase + "-auto-markers-radius")
+
+                // Exact value: type any radius instead of using the power-of-two slider.
+                .AddScrollSafeNumberInput(
+                    bounds: RadiusInputBounds(markerOptionIconColorButtonBounds).WithParent(markerOptionRowBounds),
+                    onTextChanged: text =>
+                    {
+                        if (radiusInputUpdating || !TryParseRadius(text, out int typed)) return;
+                        markerSetting.MarkerCoverageRadius = ClampRadius(typed, markerSetting);
+                        ConfigureStepSlider(SingleComposer.GetSlider(keyBase + "-auto-markers-radius"),
+                            GetRadiusSteps(markerSetting), markerSetting.MarkerCoverageRadius);
+                    },
+                    clipBounds: scrollClipBounds,
+                    key: keyBase + "-auto-markers-radius-input")
+
+                .AddDynamicText(
+                    text: Lang.Get("egocarib-mapmarkers:radius-unit"),
+                    font: CairoFont.WhiteSmallText(),
+                    bounds: RadiusUnitBounds(markerOptionIconColorButtonBounds).WithParent(markerOptionRowBounds),
+                    key: keyBase + "-auto-markers-radius-unit")
+
             .EndIf()
             .AddIf(markerSetting.Enabled == false)
 
@@ -641,7 +710,246 @@ namespace Egocarib.AutoMapMarkers.GUI
 
             SingleComposer.GetInteractiveSwitch(keyBase + "-auto-markers-enabled").SetValue(markerSetting.Enabled);
 
+            if (markerSetting.Enabled)
+            {
+                radiusRowKeys[markerSetting] = keyBase;
+                ConfigureStepSlider(SingleComposer.GetSlider(keyBase + "-auto-markers-radius"),
+                    GetRadiusSteps(markerSetting), markerSetting.MarkerCoverageRadius);
+                string inputKey = keyBase + "-auto-markers-radius-input";
+                afterCompose.Add(() =>
+                {
+                    SetRadiusInputText(inputKey, markerSetting.MarkerCoverageRadius.ToString());
+                    if (SingleComposer.GetTextInput(inputKey) is GuiElementScrollSafeNumberInput input)
+                    {
+                        // Done typing: show the value actually stored (clamped, or restored if left empty).
+                        input.OnCommit = () => SetRadiusInputText(inputKey, markerSetting.MarkerCoverageRadius.ToString());
+                    }
+                });
+            }
+
             markerOptionRowBounds = markerOptionRowBounds.BelowCopy();
+        }
+
+        private const double RadiusSliderOffsetX = 145; // icon/color button (70) + gap + expand button (32) + gap
+        private const double RadiusSliderWidth = 230;
+        private const double RadiusInputWidth = 52;
+
+        private static ElementBounds RadiusInputBounds(ElementBounds iconColumnBounds)
+        {
+            return ElementBounds.Fixed(
+                iconColumnBounds.fixedX + RadiusSliderOffsetX + RadiusSliderWidth + 12,
+                iconColumnBounds.fixedY + 3,
+                RadiusInputWidth, 26);
+        }
+
+        private static ElementBounds RadiusUnitBounds(ElementBounds iconColumnBounds)
+        {
+            return ElementBounds.Fixed(
+                iconColumnBounds.fixedX + RadiusSliderOffsetX + RadiusSliderWidth + 12 + RadiusInputWidth + 6,
+                iconColumnBounds.fixedY + 6,
+                60, 24);
+        }
+
+        /// <summary>True while the code (not the player) is changing a radius box, so its change handler stays quiet.</summary>
+        private bool radiusInputUpdating;
+
+        /// <summary>Setup that needs composed elements (text boxes), run right after Compose().</summary>
+        private readonly List<Action> afterCompose = new List<Action>();
+
+        private void SetRadiusInputText(string key, string text)
+        {
+            var input = SingleComposer?.GetTextInput(key);
+            if (input == null || input.HasFocus) return; // never overwrite what the player is typing
+            radiusInputUpdating = true;
+            try { input.SetValue(text); }
+            finally { radiusInputUpdating = false; }
+        }
+
+        private static bool TryParseRadius(string text, out int radius)
+        {
+            return int.TryParse(text?.Trim(), out radius) && radius >= 1;
+        }
+
+        private static int ClampRadius(int radius, AutoMapMarkerSetting setting)
+        {
+            return GameMath.Clamp(radius, 1, Math.Max(1, setting.MaxCoverageRadius));
+        }
+
+        private static string FormatRadius(int radius)
+        {
+            return radius + " blocks";
+        }
+
+        /// <summary>
+        /// Coverage radius choices: powers of two (2..512), easier to hit than a 1-block slider.
+        /// Values saved before this change (e.g. 40, 500) are kept as they are until the slider moves.
+        /// </summary>
+        private static readonly int[] RadiusPowers = { 2, 4, 8, 16, 32, 64, 128, 256, 512 };
+
+        /// <summary>Enabled marker setting -> its row's key base, so group sliders can update the rows.</summary>
+        private readonly Dictionary<AutoMapMarkerSetting, string> radiusRowKeys = new Dictionary<AutoMapMarkerSetting, string>();
+
+        private static int[] GetRadiusSteps(int maxRadius)
+        {
+            int[] steps = RadiusPowers.Where(p => p <= maxRadius).ToArray();
+            return steps.Length > 0 ? steps : new[] { Math.Max(1, maxRadius) };
+        }
+
+        // Never cap below the current value, so a radius saved by a hand-edited settings file
+        // (or an older definition) isn't lost when the menu opens.
+        private static int[] GetRadiusSteps(AutoMapMarkerSetting setting)
+        {
+            return GetRadiusSteps(Math.Max(setting.MaxCoverageRadius, setting.MarkerCoverageRadius));
+        }
+
+        /// <summary>Index of the step closest to value on a log scale (40 -> 32, 48 -> 64).</summary>
+        private static int NearestStepIndex(int[] steps, int value)
+        {
+            double target = Math.Log(Math.Max(1, value));
+            int best = 0;
+            double bestDistance = double.MaxValue;
+            for (int i = 0; i < steps.Length; i++)
+            {
+                double distance = Math.Abs(Math.Log(steps[i]) - target);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    best = i;
+                }
+            }
+            return best;
+        }
+
+        private static void ConfigureStepSlider(GuiElementSlider slider, int[] steps, int currentValue)
+        {
+            if (slider == null) return;
+            slider.OnSliderTooltip = index => FormatRadius(steps[GameMath.Clamp(index, 0, steps.Length - 1)]);
+            slider.SetValues(NearestStepIndex(steps, currentValue), 0, Math.Max(1, steps.Length - 1), 1);
+        }
+
+        private void SetRowRadiusSlider(string keyBase, AutoMapMarkerSetting setting)
+        {
+            ConfigureStepSlider(SingleComposer.GetSlider(keyBase + "-auto-markers-radius"),
+                GetRadiusSteps(setting), setting.MarkerCoverageRadius);
+            SetRadiusInputText(keyBase + "-auto-markers-radius-input", setting.MarkerCoverageRadius.ToString());
+        }
+
+        /// <summary>Every marker setting in these subgroups: collapsed parents and their sub-entries.</summary>
+        private static List<AutoMapMarkerSetting> CollectSettings(IEnumerable<MarkerSettingSubgroup> subgroups)
+        {
+            var result = new List<AutoMapMarkerSetting>();
+            foreach (var subgroup in subgroups)
+            {
+                foreach (var entry in subgroup.Entries)
+                {
+                    if (entry.Setting != null && !result.Contains(entry.Setting))
+                        result.Add(entry.Setting);
+                    if (entry.SubEntries == null) continue;
+                    foreach (var sub in entry.SubEntries)
+                    {
+                        if (sub.Setting != null && !result.Contains(sub.Setting))
+                            result.Add(sub.Setting);
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Adds a slider + value label that sets the coverage radius of every marker in the group at once
+        /// (each clamped to that marker's own maximum). Must be called inside BeginChildElements(rowBounds).
+        /// </summary>
+        private void ComposeGroupRadiusSlider(string key, List<AutoMapMarkerSetting> members,
+            ElementBounds rowBounds, ElementBounds iconColumnBounds)
+        {
+            if (members.Count == 0) return;
+
+            int groupMax = members.Max(m => Math.Max(m.MaxCoverageRadius, m.MarkerCoverageRadius));
+            int[] steps = GetRadiusSteps(groupMax);
+            bool allSame = members.All(m => m.MarkerCoverageRadius == members[0].MarkerCoverageRadius);
+
+            string inputKey = key + "-input";
+            void ApplyToGroup(int radius)
+            {
+                foreach (var member in members)
+                {
+                    member.MarkerCoverageRadius = ClampRadius(radius, member);
+                    if (radiusRowKeys.TryGetValue(member, out string rowKey))
+                        SetRowRadiusSlider(rowKey, member);
+                }
+            }
+            string GroupText() => members.All(m => m.MarkerCoverageRadius == members[0].MarkerCoverageRadius)
+                ? members[0].MarkerCoverageRadius.ToString()
+                : "";
+
+            SingleComposer
+            .AddScrollSafeSlider(
+                onNewSliderValue: index =>
+                {
+                    int radius = steps[GameMath.Clamp(index, 0, steps.Length - 1)];
+                    ApplyToGroup(radius);
+                    SetRadiusInputText(inputKey, GroupText());
+                    return true;
+                },
+                bounds: ElementBounds.Fixed(
+                        iconColumnBounds.fixedX + RadiusSliderOffsetX,
+                        iconColumnBounds.fixedY + 6,
+                        RadiusSliderWidth, 20)
+                    .WithParent(rowBounds),
+                key: key)
+            .AddScrollSafeNumberInput(
+                bounds: RadiusInputBounds(iconColumnBounds).WithParent(rowBounds),
+                onTextChanged: text =>
+                {
+                    if (radiusInputUpdating || !TryParseRadius(text, out int typed)) return;
+                    ApplyToGroup(typed);
+                    ConfigureStepSlider(SingleComposer.GetSlider(key), steps, typed);
+                },
+                clipBounds: scrollClipBounds,
+                key: inputKey)
+            .AddDynamicText(
+                text: Lang.Get("egocarib-mapmarkers:radius-unit"),
+                font: CairoFont.WhiteSmallText(),
+                bounds: RadiusUnitBounds(iconColumnBounds).WithParent(rowBounds),
+                key: key + "-unit");
+
+            afterCompose.Add(() =>
+            {
+                if (SingleComposer.GetTextInput(inputKey) is GuiElementScrollSafeNumberInput input)
+                {
+                    // Empty box + "mixed" placeholder when the markers in the group differ.
+                    input.SetPlaceHolderText(Lang.Get("egocarib-mapmarkers:radius-mixed"));
+                    input.OnCommit = () => SetRadiusInputText(inputKey, GroupText());
+                }
+                SetRadiusInputText(inputKey, GroupText());
+            });
+
+            int shown = allSame ? members[0].MarkerCoverageRadius
+                : members.Select(m => m.MarkerCoverageRadius).OrderBy(r => r).ElementAt(members.Count / 2); // median
+            ConfigureStepSlider(SingleComposer.GetSlider(key), steps, shown);
+        }
+
+        /// <summary>
+        /// The marker rows now carry radius sliders, which would otherwise grab the mouse wheel
+        /// whenever the cursor passes over one while scrolling the list. Over the list area the
+        /// wheel always scrolls the list.
+        /// </summary>
+        public override void OnMouseWheel(MouseWheelEventArgs args)
+        {
+            var scrollbar = SingleComposer?.GetScrollbar("scrollbar");
+            if (scrollbar != null && scrollClipBounds != null
+                && scrollClipBounds.PointInside(capi.Input.MouseX, capi.Input.MouseY))
+            {
+                float visibleHeight = (float)ScrollAreaHeight;
+                float maxScroll = Math.Max(0, CalculateTabContentHeight(42) - visibleHeight);
+                float step = 42 * args.deltaPrecise; // one row per wheel notch, in the same unscaled units as currentScrollY
+                float target = Math.Clamp(scrollbar.CurrentYPosition - step, 0, maxScroll);
+                scrollbar.CurrentYPosition = target;
+                scrollbar.TriggerChanged();
+                args.SetHandled(true);
+                return;
+            }
+            base.OnMouseWheel(args);
         }
 
         /// <summary>
@@ -940,13 +1248,30 @@ namespace Egocarib.AutoMapMarkers.GUI
 
         private bool OnIconColorButtonClick(string settingGroup, string settingName, AutoMapMarkerSetting settings)
         {
-            iconConfigPopup = new MapMarkerIconSettingsGUI(capi, settingName, settings, icons, colors);
-            iconConfigPopup.TryOpen();
-            iconConfigPopup.OnClosed += delegate
+            try
             {
-                capi.Gui.RequestFocus(this);
-                SetupDialog();  // Redraw GUI
-            };
+                if (icons == null || icons.Length == 0) LoadIconTextures();
+                if (colors == null || colors.Length == 0) LoadColorOptions();
+                iconConfigPopup = new MapMarkerIconSettingsGUI(capi, settingName, settings, icons, colors);
+                iconConfigPopup.OnClosed += delegate
+                {
+                    try
+                    {
+                        capi.Gui.RequestFocus(this);
+                        SetupDialog();  // Redraw GUI
+                    }
+                    catch (Exception e)
+                    {
+                        MessageUtil.LogError($"Could not redraw the settings menu after editing a marker: {e}");
+                    }
+                };
+                iconConfigPopup.TryOpen();
+            }
+            catch (Exception e)
+            {
+                MessageUtil.LogError($"Could not open the marker icon/color editor: {e}");
+                capi.ShowChatMessage("[Auto Map Markers] Could not open the icon/color editor, see client-main.log.");
+            }
             return true;
         }
 
@@ -956,6 +1281,27 @@ namespace Egocarib.AutoMapMarkers.GUI
         private bool OnSaveButton()
         {
             TryClose();
+            return true;
+        }
+
+        /// <summary>
+        /// Deletes the saved settings and rebuilds the dialog from the mod's shipped defaults.
+        /// </summary>
+        private bool OnResetDefaultsClicked()
+        {
+            try
+            {
+                ModSettings = MapMarkerConfig.ResetSettings(capi);
+                Layout = ModSettings.GetMapMarkerSettingLayout();
+                currentScrollY = 0;
+                SetupDialog();
+                MessageUtil.Chat(Lang.Get("egocarib-mapmarkers:reset-defaults-done"));
+            }
+            catch (Exception exception)
+            {
+                MapMarkerMod.CoreAPI?.Logger.Error(
+                    $"Map Marker Mod: Failed to reset settings. ({exception})");
+            }
             return true;
         }
 

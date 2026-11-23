@@ -66,7 +66,8 @@ namespace Egocarib.AutoMapMarkers.Settings
             public bool SuppressMarkerOnFarmland { get; set; } = true;
             public bool EnableDetectHotkey { get; set; } = false;
             public bool ChatNotifyOnBoatMarker { get; set; } = false;
-            public bool DisableAllModFeatures { get; set; } = true;
+            public bool RemoveMarkerOnBlockBreak { get; set; } = true;
+            public bool DisableAllModFeatures { get; set; } = false;
             public Dictionary<string, MarkerOverride> MarkerOverrides { get; set; } = new Dictionary<string, MarkerOverride>();
             public Dictionary<string, bool> ExpandStates { get; set; } = new Dictionary<string, bool>();
         }
@@ -126,6 +127,7 @@ namespace Egocarib.AutoMapMarkers.Settings
                 settings.SuppressMarkerOnFarmland = settingsFile.SuppressMarkerOnFarmland;
                 settings.EnableDetectHotkey = settingsFile.EnableDetectHotkey;
                 settings.ChatNotifyOnBoatMarker = settingsFile.ChatNotifyOnBoatMarker;
+                settings.RemoveMarkerOnBlockBreak = settingsFile.RemoveMarkerOnBlockBreak;
                 settings.DisableAllModFeatures = settingsFile.DisableAllModFeatures;
                 settings.ConfigVersion = settingsFile.ConfigVersion;
             }
@@ -183,6 +185,7 @@ namespace Egocarib.AutoMapMarkers.Settings
                 SuppressMarkerOnFarmland = settings.SuppressMarkerOnFarmland,
                 EnableDetectHotkey = settings.EnableDetectHotkey,
                 ChatNotifyOnBoatMarker = settings.ChatNotifyOnBoatMarker,
+                RemoveMarkerOnBlockBreak = settings.RemoveMarkerOnBlockBreak,
                 DisableAllModFeatures = settings.DisableAllModFeatures
             };
 
@@ -280,6 +283,17 @@ namespace Egocarib.AutoMapMarkers.Settings
         public static bool SettingsFileExists(string modConfigPath)
         {
             return File.Exists(Path.Combine(modConfigPath, SettingsFolder, SettingsFileName));
+        }
+
+        /// <summary>
+        /// Deletes settings.json so the next load rebuilds everything from defaults
+        /// (definition file defaults plus the hardcoded toggle defaults).
+        /// </summary>
+        public static void DeleteSettingsFile(string modConfigPath)
+        {
+            string settingsPath = Path.Combine(modConfigPath, SettingsFolder, SettingsFileName);
+            if (File.Exists(settingsPath))
+                File.Delete(settingsPath);
         }
 
         /// <summary>

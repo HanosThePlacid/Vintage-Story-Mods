@@ -13,5 +13,7 @@
   "egocarib-mapmarkers:config-keybind-custom1": "Özel İşaret 1 Ekle",
   "egocarib-mapmarkers:config-keybind-custom2": "Özel İşaret 2 Ekle",
   "egocarib-mapmarkers:config-keybind-custom3": "Özel İşaret 3 Ekle",
-  "egocarib-mapmarkers:config-keybind-delete-nearest": "En Yakın Harita İşaretçisini Sil"
+  "egocarib-mapmarkers:config-keybind-delete-nearest": "En Yakın Harita İşaretçisini Sil",
+  "egocarib-mapmarkers:reset-defaults": "Reset to defaults",
+  "egocarib-mapmarkers:reset-defaults-done": "Auto Map Marker settings were reset to defaults."
 }

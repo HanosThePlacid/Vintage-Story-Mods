@@ -261,7 +261,7 @@ namespace Egocarib.AutoMapMarkers.Network
         /// <remarks>
         /// Side: client only
         /// </remarks>
-        public void RequestWaypointFromServer(Vec3d position, AutoMapMarkerSetting settings, bool sendChatMessage, string dynamicTitleComponent = null)
+        public void RequestWaypointFromServer(Vec3d position, AutoMapMarkerSetting settings, bool sendChatMessage, string dynamicTitleComponent = null, BlockPos sourceBlockPos = null)
         {
             var modSettings = ValidateClientRequest("map marker creation");
             if (modSettings == null) return;
@@ -269,6 +269,13 @@ namespace Egocarib.AutoMapMarkers.Network
             // Both handlers ignore disabled markers anyway; dropping them here avoids a packet per
             // block while mining through a rock type whose marker is switched off.
             if (settings == null || !settings.Enabled) return;
+
+            // Block-driven markers remember their source so the marker can be removed when
+            // that block is broken. Entity/mount markers pass no source block.
+            if (sourceBlockPos != null)
+            {
+                BlockMarkerTracker.Track(sourceBlockPos, position, settings);
+            }
 
             if (!UseServerChannel)
             {

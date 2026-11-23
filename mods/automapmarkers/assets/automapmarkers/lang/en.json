@@ -36,6 +36,7 @@
   "egocarib-mapmarkers:disable-mod": "Temporarily disable the Auto Map Markers mod",
   "egocarib-mapmarkers:re-enable-mod": "Click to enable the Auto Map Markers mod",
   "egocarib-mapmarkers:disabled-hint": "Auto Map Markers is installed but turned off. Press {0} to open its settings and enable it.",
+  "egocarib-mapmarkers:upstream-conflict": "Auto Map Markers (Client-Side Only) is inactive because the original Auto Map Markers mod is also installed. Both use the same settings file and would place every marker twice. Remove one of them.",
 
   "egocarib-mapmarkers:config-keybind-name": "Auto Map Marker Config",
   "egocarib-mapmarkers:config-keybind-custom1": "Add Custom Marker 1",
@@ -102,5 +103,10 @@
   "egocarib-mapmarkers:custom-marker-1": "Custom Marker 1",
   "egocarib-mapmarkers:custom-marker-2": "Custom Marker 2",
   "egocarib-mapmarkers:custom-marker-3": "Custom Marker 3",
-  "egocarib-mapmarkers:custom-gui-description": "Configure hotkeys for these markers in the game settings menu (Esc > Settings > Controls)."
+  "egocarib-mapmarkers:custom-gui-description": "Configure hotkeys for these markers in the game settings menu (Esc > Settings > Controls).",
+  "egocarib-mapmarkers:reset-defaults": "Reset to defaults",
+  "egocarib-mapmarkers:reset-defaults-done": "Auto Map Marker settings were reset to defaults.",
+  "egocarib-mapmarkers:radius-all-in-tab": "All markers in this tab",
+  "egocarib-mapmarkers:radius-mixed": "mixed",
+  "egocarib-mapmarkers:radius-unit": "blocks"
 }

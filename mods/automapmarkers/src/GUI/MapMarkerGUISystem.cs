@@ -25,9 +25,9 @@ namespace Egocarib.AutoMapMarkers.GUI
         private bool RegisteredDeleteHotkey = false;
         private bool RegisteredDetectHotkey = false;
 
-        public override bool ShouldLoad(EnumAppSide forSide)
+        public override bool ShouldLoad(ICoreAPI api)
         {
-            return forSide == EnumAppSide.Client;
+            return api.Side == EnumAppSide.Client && !Compat.UpstreamModGuard.IsUpstreamLoaded(api);
         }
 
         public override void StartClientSide(ICoreClientAPI clientAPI)
@@ -39,8 +39,9 @@ namespace Egocarib.AutoMapMarkers.GUI
         }
 
         /// <summary>
-        /// The mod ships disabled, and players who never open the settings menu assume it's broken.
-        /// On world join, point them at the settings hotkey (as currently bound) while it's still off.
+        /// Players who turned the mod off (or carried over a disabled settings file from older
+        /// versions, which shipped disabled) can forget it and assume it's broken. On world join,
+        /// point them at the settings hotkey (as currently bound) while it's still off.
         /// </summary>
         private void ShowEnableHintIfDisabled()
         {

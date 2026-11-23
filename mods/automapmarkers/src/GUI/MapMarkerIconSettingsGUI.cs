@@ -23,20 +23,42 @@ namespace Egocarib.AutoMapMarkers.GUI
         public MapMarkerIconSettingsGUI(ICoreClientAPI capi, string iconTitle, AutoMapMarkerSetting iconSettings, string[] icons, int[] colors)
             : base("", capi)
         {
-            this.icons = icons;
-            this.colors = colors;
+            // On some servers/setups the game's lists can come back empty; never open a picker
+            // with nothing in it (saving would index an empty array).
+            this.icons = icons != null && icons.Length > 0
+                ? icons
+                : new[] { string.IsNullOrEmpty(iconSettings?.MarkerIcon) ? "circle" : iconSettings.MarkerIcon };
+            this.colors = colors != null && colors.Length > 0
+                ? colors
+                : Egocarib.AutoMapMarkers.Utilities.WaypointUtil.GetDefaultWaypointColorOptions();
             this.iconTitle = iconTitle;
             this.settings = iconSettings;
             ComposeDialog();
         }
 
+        private void ComposeDialog()
+        {
+            try
+            {
+                ComposeDialogInternal();
+            }
+            catch (System.Exception e)
+            {
+                // A broken dialog must never take the game down with it.
+                Egocarib.AutoMapMarkers.Utilities.MessageUtil.LogError($"Could not open the marker icon/color editor: {e}");
+                capi.ShowChatMessage("[Auto Map Markers] Could not open the icon/color editor, see client-main.log.");
+                SingleComposer?.Dispose();
+                SingleComposer = null;
+            }
+        }
+
         public override bool TryOpen()
         {
             ComposeDialog();
-            return base.TryOpen();
+            return SingleComposer != null && base.TryOpen();
         }
 
-        private void ComposeDialog()
+        private void ComposeDialogInternal()
         {
             ElementBounds leftColumn = ElementBounds.Fixed(0.0, 28.0, 160.0, 25.0);
             ElementBounds rightColumn = leftColumn.RightCopy();
@@ -48,12 +70,12 @@ namespace Egocarib.AutoMapMarkers.GUI
             if (SingleComposer != null)
                 SingleComposer.Dispose();
             int colorIconSize = 22;
-            selectedIconIndex = icons.IndexOf(settings.MarkerIcon);
+            selectedIconIndex = settings.MarkerIcon == null ? -1 : icons.IndexOf(settings.MarkerIcon);
             if (selectedIconIndex < 0)
                 selectedIconIndex = 0;
             int? currentColor = settings.MarkerColorIntegerNoAlpha;
             selectedColorIndex = currentColor == null ? 0 : colors.IndexOf(currentColor.Value);
-            if (selectedColorIndex < 0)
+            if (selectedColorIndex < 0 && currentColor != null)
             {
                 colors = ArrayExtensions.Append(colors, currentColor.Value);
                 selectedColorIndex = colors.Length - 1;
@@ -66,8 +88,6 @@ namespace Egocarib.AutoMapMarkers.GUI
                     .AddTextInput(rightColumn = rightColumn.FlatCopy().WithFixedWidth(400.0), OnNameChanged, CairoFont.TextInput(), $"{GuiPrefix}-nameInput")
                     .AddStaticText(Lang.Get("egocarib-mapmarkers:should-pin"), CairoFont.WhiteSmallText(), leftColumn = leftColumn.BelowCopy(0.0, 18.0))
                     .AddSwitch(OnPinnedToggled, rightColumn = rightColumn.BelowCopy(0.0, 14.0).WithFixedWidth(400.0), $"{GuiPrefix}-pinnedSwitch")
-                    .AddStaticText(Lang.Get("egocarib-mapmarkers:coverage-radius"), CairoFont.WhiteSmallText(), leftColumn = leftColumn.BelowCopy(0.0, 18.0))
-                    .AddSlider(OnRadiusChanged, rightColumn = rightColumn.BelowCopy(0.0, 14.0).WithFixedWidth(400.0), $"{GuiPrefix}-radiusSlider")
                     .AddRichtext(Lang.Get("waypoint-color"), CairoFont.WhiteSmallText(), leftColumn = leftColumn.BelowCopy(0.0, 14.0))
                     .AddColorListPicker(colors, OnColorSelected, leftColumn = leftColumn.BelowCopy(0.0, 5.0).WithFixedSize(colorIconSize, colorIconSize), 555, $"{GuiPrefix}-colorPicker")
                     .AddStaticText(Lang.Get("Icon"), CairoFont.WhiteSmallText(), leftColumn = leftColumn.WithFixedPosition(0.0, leftColumn.fixedY + leftColumn.fixedHeight).WithFixedWidth(100.0).BelowCopy())
@@ -78,22 +98,21 @@ namespace Egocarib.AutoMapMarkers.GUI
                 .Compose();
             SingleComposer.ColorListPickerSetValue($"{GuiPrefix}-colorPicker", selectedColorIndex);
             SingleComposer.IconListPickerSetValue($"{GuiPrefix}-iconPicker", selectedIconIndex);
-            SingleComposer.GetTextInput($"{GuiPrefix}-nameInput").SetValue(settings.MarkerTitle);
+            SingleComposer.GetTextInput($"{GuiPrefix}-nameInput").SetValue(settings.MarkerTitle ?? "");
             SingleComposer.GetSwitch($"{GuiPrefix}-pinnedSwitch").SetValue(settings.MarkerPinned);
-            // Never cap below the current value, so a radius saved by a hand-edited settings file
-            // (or an older definition) isn't silently clamped when the dialog opens.
-            int maxRadius = System.Math.Max(settings.MaxCoverageRadius, settings.MarkerCoverageRadius);
-            SingleComposer.GetSlider($"{GuiPrefix}-radiusSlider").SetValues(settings.MarkerCoverageRadius, 1, maxRadius, 1, " blocks");
+            // Coverage radius lives on the marker's row in the main settings list, not here.
         }
 
         private void OnIconSelected(int index)
         {
-            selectedIconIndex = index;
+            if (index >= 0 && index < icons.Length)
+                selectedIconIndex = index;
         }
 
         private void OnColorSelected(int index)
         {
-            selectedColorIndex = index;
+            if (index >= 0 && index < colors.Length)
+                selectedColorIndex = index;
         }
 
         // Intentionally empty — the pinned value is read directly from the switch when saving
@@ -101,18 +120,26 @@ namespace Egocarib.AutoMapMarkers.GUI
         {
         }
 
-        private bool OnRadiusChanged(int value)
-        {
-            return true;
-        }
-
         private bool OnSave()
         {
-            settings.MarkerIcon = icons[selectedIconIndex];
-            settings.MarkerColor = ColorUtil.Int2Hex(colors[selectedColorIndex]);
-            settings.MarkerTitle = SingleComposer.GetTextInput($"{GuiPrefix}-nameInput").GetText();
-            settings.MarkerPinned = SingleComposer.GetSwitch($"{GuiPrefix}-pinnedSwitch").On;
-            settings.MarkerCoverageRadius = SingleComposer.GetSlider($"{GuiPrefix}-radiusSlider").GetValue();
+            try
+            {
+                if (selectedIconIndex >= 0 && selectedIconIndex < icons.Length)
+                    settings.MarkerIcon = icons[selectedIconIndex];
+                if (selectedColorIndex >= 0 && selectedColorIndex < colors.Length)
+                    settings.MarkerColor = ColorUtil.Int2Hex(colors[selectedColorIndex]);
+                string title = SingleComposer?.GetTextInput($"{GuiPrefix}-nameInput")?.GetText();
+                if (!string.IsNullOrWhiteSpace(title))
+                    settings.MarkerTitle = title;
+                var pinned = SingleComposer?.GetSwitch($"{GuiPrefix}-pinnedSwitch");
+                if (pinned != null)
+                    settings.MarkerPinned = pinned.On;
+            }
+            catch (System.Exception e)
+            {
+                Egocarib.AutoMapMarkers.Utilities.MessageUtil.LogError($"Could not save marker icon/color: {e}");
+                capi.ShowChatMessage("[Auto Map Markers] Could not save the icon/color change, see client-main.log.");
+            }
             TryClose();
             return true;
         }
@@ -125,7 +152,9 @@ namespace Egocarib.AutoMapMarkers.GUI
 
         private void OnNameChanged(string t1)
         {
-            SingleComposer.GetButton($"{GuiPrefix}-saveButton").Enabled = t1.Trim() != "";
+            var saveButton = SingleComposer?.GetButton($"{GuiPrefix}-saveButton");
+            if (saveButton != null)
+                saveButton.Enabled = (t1 ?? "").Trim() != "";
         }
 
         public override bool CaptureAllInputs()

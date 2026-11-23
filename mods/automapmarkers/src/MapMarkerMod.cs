@@ -5,6 +5,7 @@ using Egocarib.AutoMapMarkers.Events;
 using Egocarib.AutoMapMarkers.Network;
 using Egocarib.AutoMapMarkers.Patches;
 using Egocarib.AutoMapMarkers.Settings;
+using Egocarib.AutoMapMarkers.Utilities;
 using Egocarib.AutoMapMarkers.Waypoints;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -18,6 +19,11 @@ namespace Egocarib.AutoMapMarkers
         public static ICoreServerAPI CoreServerAPI;
         public static ICoreClientAPI CoreClientAPI;
         public static MapMarkerNetwork Network;
+
+        public override bool ShouldLoad(ICoreAPI api)
+        {
+            return !UpstreamModGuard.IsUpstreamLoaded(api);
+        }
 
         /// <summary>
         /// Server/client shared initialization
@@ -53,6 +59,7 @@ namespace Egocarib.AutoMapMarkers
             ClientWaypointCommands.Initialize(api);
             ClientBehaviorInjector.Register(api);
             CoreClientAPI.Input.InWorldAction += DetectionHandler.HandlePlayerSneak;
+            api.Event.OnPlayerBrokenBlock += BlockMarkerTracker.HandleBlockBroken;
         }
 
         /// <summary>
@@ -65,6 +72,8 @@ namespace Egocarib.AutoMapMarkers
             {
                 if (CoreClientAPI.Input != null)
                     CoreClientAPI.Input.InWorldAction -= DetectionHandler.HandlePlayerSneak;
+                CoreClientAPI.Event.OnPlayerBrokenBlock -= BlockMarkerTracker.HandleBlockBroken;
+                BlockMarkerTracker.Reset();
                 ClientWaypointCommands.Dispose(CoreClientAPI);
                 ClientBehaviorInjector.Unregister(CoreClientAPI);
                 ClientWaypointAccess.Reset();

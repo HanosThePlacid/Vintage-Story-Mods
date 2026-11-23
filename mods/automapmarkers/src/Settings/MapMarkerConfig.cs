@@ -97,8 +97,10 @@ namespace Egocarib.AutoMapMarkers.Settings
             public bool EnableDetectHotkey = false;
             [ProtoMember(13, IsRequired = true)]
             public bool ChatNotifyOnBoatMarker = false;
+            [ProtoMember(14)]
+            public bool RemoveMarkerOnBlockBreak = true;
             [ProtoMember(2, IsRequired = true)]
-            public bool DisableAllModFeatures = true;
+            public bool DisableAllModFeatures = false;
             [ProtoMember(3)]
             public double ConfigVersion = 3.00;  // 3.00 adds MapMarkerSettings_Misc and MapMarkerSettings_DeepOre
             [ProtoMember(4)]
@@ -894,24 +896,22 @@ namespace Egocarib.AutoMapMarkers.Settings
                 {
                     get
                     {
-                        System.Drawing.Color parsedColor;
-                        if (MarkerColor.StartsWith("#", StringComparison.Ordinal))
+                        // Never throws: a missing or malformed color (hand-edited file, server-synced
+                        // value, older version) just means "no color", and callers fall back to white
+                        // or the first color option.
+                        string color = MarkerColor?.Trim();
+                        if (string.IsNullOrEmpty(color))
+                            return null;
+                        string hex = color.StartsWith("#", StringComparison.Ordinal) ? color.Substring(1) : color;
+                        if ((hex.Length == 6 || hex.Length == 8)
+                            && Int32.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int argb))
                         {
-                            try
-                            {
-                                int argb = Int32.Parse(MarkerColor.Replace("#", ""), NumberStyles.HexNumber);
-                                parsedColor = System.Drawing.Color.FromArgb(argb);
-                            }
-                            catch (FormatException)
-                            {
-                                return null;
-                            }
+                            return System.Drawing.Color.FromArgb(argb).ToArgb();
                         }
-                        else
-                        {
-                            parsedColor = System.Drawing.Color.FromName(MarkerColor);
-                        }
-                        return parsedColor.ToArgb();
+                        if (color.StartsWith("#", StringComparison.Ordinal))
+                            return null;
+                        System.Drawing.Color parsedColor = System.Drawing.Color.FromName(color);
+                        return parsedColor.IsKnownColor ? parsedColor.ToArgb() : (int?)null;
                     }
                 }
 
@@ -1057,6 +1057,21 @@ namespace Egocarib.AutoMapMarkers.Settings
         {
             _cachedClientSettings = null;
             _cachedRegistry = null;
+            _cachedBoatRegistry = null;
+        }
+
+        /// <summary>
+        /// Deletes the user's settings.json and rebuilds Settings from the mod's
+        /// defaults. Definition files are re-extracted from the embedded resource,
+        /// so this restores every toggle and coverage radius to its shipped value.
+        /// </summary>
+        public static Settings ResetSettings(ICoreAPI api)
+        {
+            string modConfigPath = GetModConfigPath(api);
+            MarkerSettingsPersistence.DeleteSettingsFile(modConfigPath);
+            _cachedDefinitions = null;
+            ClearCachedClientSettings();
+            return GetSettings(api);
         }
 
         /// <summary>

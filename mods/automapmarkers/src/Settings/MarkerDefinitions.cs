@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -152,12 +152,12 @@ namespace Egocarib.AutoMapMarkers.Settings
         public bool Pinned { get; set; } = false;
         public int CoverageRadius { get; set; } = 1;
         /// <summary>
-        /// Upper bound of the coverage radius slider. Point resources (bushes, ore bits) stay at 64;
-        /// area resources (clay, peat, trees, rock types) raise it so one marker can cover a whole
-        /// deposit or forest.
+        /// Upper bound of the coverage radius slider. Every marker gets the full 2-512 range so
+        /// players can pick their own spacing (e.g. ~40 for flowers, 500 for rock types); a
+        /// definition may still raise it further.
         /// </summary>
         public int MaxCoverageRadius { get; set; } = DefaultMaxCoverageRadius;
 
-        public const int DefaultMaxCoverageRadius = 64;
+        public const int DefaultMaxCoverageRadius = 512;
     }
 }

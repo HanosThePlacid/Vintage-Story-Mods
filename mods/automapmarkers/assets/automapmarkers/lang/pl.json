@@ -59,5 +59,7 @@
   "egocarib-mapmarkers:custom-marker-1": "Niestandardowy Znacznik 1",
   "egocarib-mapmarkers:custom-marker-2": "Niestandardowy Znacznik 2",
   "egocarib-mapmarkers:custom-marker-3": "Niestandardowy Znacznik 3",
-  "egocarib-mapmarkers:custom-gui-description": "Skonfiguruj skróty klawiszowe dla tych znaczników w menu ustawień gry (Esc > Settings > Controls)."
+  "egocarib-mapmarkers:custom-gui-description": "Skonfiguruj skróty klawiszowe dla tych znaczników w menu ustawień gry (Esc > Settings > Controls).",
+  "egocarib-mapmarkers:reset-defaults": "Reset to defaults",
+  "egocarib-mapmarkers:reset-defaults-done": "Auto Map Marker settings were reset to defaults."
 }

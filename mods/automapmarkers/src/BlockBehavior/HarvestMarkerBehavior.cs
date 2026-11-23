@@ -49,7 +49,9 @@ namespace Egocarib.AutoMapMarkers.BlockBehavior
                             {
                                 bool shouldChat = config.ChatNotifyOnWaypointCreation;
                                 Vec3d pos = blockSel.Position.ToVec3d();
-                                MapMarkerMod.Network?.RequestWaypointFromServer(pos, settings, shouldChat, thing.DynamicTitleComponent);
+                                MapMarkerMod.Network?.RequestWaypointFromServer(
+                                    pos, settings, shouldChat, thing.DynamicTitleComponent,
+                                    sourceBlockPos: blockSel.Position);
                             }
                         }
                     }
